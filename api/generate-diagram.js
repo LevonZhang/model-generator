@@ -1,9 +1,9 @@
 // api/generate-diagram.js
 
-import fetch from 'node-fetch';
-
-export default async (req, res) => { // 使用 export default 导出模块
+module.exports = async (req, res) => {
   try {
+    const fetch = (await import('node-fetch')).default;
+
     const response = await fetch('https://kroki.io/', {
       method: 'POST',
       headers: {
