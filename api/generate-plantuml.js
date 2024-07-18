@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
       // 调用 Google Gemini API 生成 PlantUML 代码
       const response = await googleAI.generateText({
         model: "gemini-pro", // 或其他合适的模型
-        prompt: `根据以下领域需求描述生成 PlantUML 代码：\n\n${domainDescription}`,
+        prompt: `你是一个业务领域设计专家，并且精通PlantUML的类图设计。请根据以下领域需求描述生成 PlantUML 类图源代码：\n\n${domainDescription}`,
       });
   
       // 提取生成的 PlantUML 代码

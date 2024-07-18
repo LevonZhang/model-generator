@@ -1,21 +1,40 @@
 <template>
-  <div>
-    <h1>领域模型生成器</h1>
+  <div class="container">
+    <h1 class="title">领域模型生成器</h1>
 
-    <label for="domainInput">领域需求描述:</label>
-    <textarea id="domainInput" v-model="domainDescription" placeholder="用自然语言描述您的领域需求"></textarea>
-    <button @click="designModel">去设计</button>
+    <div class="input-group">
+      <label for="domainInput" class="label">领域需求描述:</label>
+      <textarea 
+        id="domainInput" 
+        v-model="domainDescription" 
+        placeholder="用自然语言描述您的领域需求"
+        class="textarea"
+        rows="8"
+      ></textarea>
+    </div>
 
-    <label for="plantumlInput">PlantUML 代码:</label>
-    <textarea id="plantumlInput" v-model="userInput" placeholder="编辑您的 PlantUML 代码"></textarea>
-    <button @click="generateModel">生成模型</button>
+    <button @click="designModel" class="button primary">去设计</button>
+
+    <div class="input-group">
+      <label for="plantumlInput" class="label">PlantUML 代码:</label>
+      <textarea 
+        id="plantumlInput" 
+        v-model="userInput" 
+        placeholder="输入您的 PlantUML 代码"
+        class="textarea"
+        rows="12"
+      ></textarea>
+    </div>
+
+    <button @click="generateModel" class="button">生成模型</button>
 
     <div v-if="isLoading" class="diagram-container">
-      图片生成中...
+      <div class="loader"></div> 
+      <p>图片生成中...</p>
     </div>
     <div v-else-if="imageUrl" class="diagram-container">
-      <img :src="imageUrl" alt="PlantUML Diagram" />
-      <button @click="downloadPNG">下载 PNG</button>
+      <img :src="imageUrl" alt="PlantUML Diagram" class="diagram-image" />
+      <button @click="downloadPNG" class="button">下载 PNG</button>
     </div>
     <div v-else-if="errorMessage" class="error-message">
       {{ errorMessage }}
@@ -111,16 +130,92 @@
   };
   </script>
   <style scoped>
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    font-family: sans-serif;
+  }
+  
+  .title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .input-group {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 1rem;
+  }
+  
+  .label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+  
+  .textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+  }
+  
+  .button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #eee;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .button:hover {
+    background-color: #ddd;
+  }
+  
+  .button.primary {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .button.primary:hover {
+    background-color: #45a049;
+  }
+  
   .diagram-container {
-    border: 1px solid #ccc; 
-    padding: 10px;
-    margin-top: 10px;
-    text-align: center; /* 图片居中 */
+    margin-top: 2rem;
+    text-align: center;
+  }
+  
+  .loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 5px solid #3498db;
+    animation: spin 2s linear infinite;
+    margin: 1rem auto;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .diagram-image {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
   }
   
   .error-message {
     color: red;
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 2rem;
   }
   </style>
