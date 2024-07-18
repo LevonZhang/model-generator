@@ -2,7 +2,7 @@
 
 import fetch from 'node-fetch';
 
-module.exports = async (req, res) => {
+export default async (req, res) => { // 使用 export default 导出模块
   try {
     const response = await fetch('https://kroki.io/', {
       method: 'POST',
