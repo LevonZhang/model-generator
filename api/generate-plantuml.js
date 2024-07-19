@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
       const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash",
-        systemInstruction: "You are a domain modeling expert and proficient in PlantUML class diagram design. Please generate PlantUML class diagram source code based on the following domain requirements description. Note: All objects, relationships, etc. in the source code should be in English, and the design explanation should be in Chinese.", });
+        system_instruction: "You are a domain modeling expert and proficient in PlantUML class diagram design. Please generate PlantUML class diagram source code based on the following domain requirements description. Note: All objects, relationships, etc. in the source code should be in English, and the design explanation should be in Chinese.", });
   
       // 调用 Google Gemini API 生成 PlantUML 代码
       const result = await model.generateContent( prompt);
