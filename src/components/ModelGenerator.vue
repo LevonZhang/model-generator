@@ -65,7 +65,7 @@
 
         try {
           // 调用 Google Gemini API 生成 PlantUML 代码
-          const response = await fetch('/api/generate-plantuml', { // 假设你创建了一个新的 Serverless 函数
+          const response = await fetch('/api/generate-plantuml', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -110,13 +110,14 @@
         this.errorMessage = null; 
 
         try {
+          let toGenText = this.userInput.replace(/^@startuml|@enduml$/gm, '').trim() // 去掉 @startuml 和 @enduml
           const response = await fetch('/api/generate-diagram', {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              "diagram_source": this.userInput.replace(/^@startuml|@enduml$/gm, '').trim(); // 去掉 @startuml 和 @enduml,
+              "diagram_source": toGenText,
               "diagram_type": "plantuml",
               "output_format": "png"
             }),
