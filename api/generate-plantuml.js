@@ -16,14 +16,15 @@ module.exports = async (req, res) => {
       const prompt=`你是一个业务领域设计专家，并且精通PlantUML的类图设计。请根据以下领域需求描述生成 PlantUML 类图源代码：\n\n${domainDescription}`
       console.log("prompt is:"+prompt)
       // 调用 Google Gemini API 生成 PlantUML 代码
-      const response = await model.generateContent( prompt);
-  
+      const result = await model.generateContent( prompt);
+
+      console.log("result.response.text:"+result.response.text());
       // 提取生成的 PlantUML 代码
-      const plantumlCode = response.text;
-      console.log("response:"+response)
+      const plantumlCode = result.response.text;
+  
       console.log("生成的plantumlCode:"+plantumlCode)
       // 返回生成的 PlantUML 代码
-      res.status(200).json({ plantuml_code: plantumlCode });
+      res.status(200).json({ "plantuml_code": plantumlCode });
   
     } catch (error) {
       console.error("Error generating PlantUML code:", error);

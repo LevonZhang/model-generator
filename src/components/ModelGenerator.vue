@@ -55,7 +55,6 @@
     },
     methods: {
       async designModel() {
-        this.isLoading = true;
         this.errorMessage = null;
         this.userInput = ''; // 清空 PlantUML 代码
 
@@ -80,6 +79,7 @@
           if(data && data.plantuml_code){
             this.userInput = data.plantuml_code.replace(/^@startuml|@enduml$/gm, '').trim(); // 去掉 @startuml 和 @enduml
             // 生成图片
+            this.isLoading = true;
             this.generateModel();
           }else{
             this.errorMessage = "设计模型输出内容为空。";
@@ -92,7 +92,6 @@
         }
       },
       async generateModel() {
-        this.isLoading = true;
         this.imageUrl = null;
         this.errorMessage = null; 
 
