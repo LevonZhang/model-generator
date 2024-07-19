@@ -81,20 +81,8 @@
 
           const data = await response.json();
           if(data && data.plantuml_code){
-            let plantumlCode = data.plantuml_code
-            console.log("plantumlCode:"+this.designExplanation)
-            // 提取 PlantUML 图代码和设计说明
-            const match = plantumlCode.match(/(@startuml[\s\S]*?@enduml)([\s\S]*)/);
-            console.log("match:"+match)
-            if (match) {
-              this.userInput = match[1].trim();
-              this.designExplanation = match[2].replace(/```/g, '').trim(); // 去除 ``` 符号
-              console.log("this.userInput"+this.userInput+",this.userInput"+this.designExplanation)
-            } else {
-              // 处理没有 @enduml 或者格式错误的情况
-              this.errorMessage = "无法解析 PlantUML 代码，请检查格式。";
-            }
-            return
+            this.userInput = data.plantuml_code; // 从 JSON 对象中获取 plantuml_code
+            this.designExplanation = data.design_explanation; // 从 JSON 对象中获取 design_explanation
             this.isLoading = true
             // 生成图片
             this.generateModel();

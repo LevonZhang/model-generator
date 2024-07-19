@@ -11,8 +11,49 @@ module.exports = async (req, res) => {
       // 初始化 Google Gemini API 客户端
       const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
+      const sys_prompt = `You are a domain modeling expert and proficient in PlantUML class diagram design. Your task is to generate a JSON response containing two fields:
+
+        1. \`plantuml_code\`: Contains ONLY the PlantUML code that represents the class diagram based on the following domain requirements description. Please refer to the PlantUML examples below for guidance on syntax and structure.
+        2. \`design_explanation\`: Contains a concise explanation of the design in Chinese.
+
+        Do NOT include any additional introductions, or code in other programming languages.
+
+        ## PlantUML Examples:
+
+        \`\`\`plantuml
+        @startuml
+        class Car
+        @enduml
+        \`\`\`
+
+        \`\`\`plantuml
+        @startuml
+        class User {
+          - name: string
+          - age: int
+        }
+        @enduml
+        \`\`\`
+
+        \`\`\`plantuml
+        @startuml
+        class Author {
+          - name: string
+        }
+        class Book {
+          - title: string
+        }
+        Author "1" -- "*" Book : writes
+        @enduml
+        \`\`\`
+
+        Domain Requirements:
+
+        ${domainDescription}
+        `;
+
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash",
-        system_instruction: "You are a domain modeling expert and proficient in PlantUML class diagram design. Please generate PlantUML class diagram source code based on the following domain requirements description. Note: All objects, relationships, etc. in the source code should be in English, and the design explanation should be in Chinese.", });
+        system_instruction: sys_prompt, });
   
       // 调用 Google Gemini API 生成 PlantUML 代码
       const result = await model.generateContent( prompt);
