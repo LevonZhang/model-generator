@@ -18,8 +18,7 @@ module.exports = async (req, res) => {
       const result = await model.generateContent( prompt);
 
       // 提取生成的 PlantUML 代码
-      const plantumlCode = result.response.text();
-      plantumlCode = plantumlCode.replace(/^```|```$/g, '');
+      const plantumlCode = result.response.text().replace(/^```|```$/g, '');
   
       console.log("生成的plantumlCode:"+plantumlCode)
       // 返回生成的 PlantUML 代码
