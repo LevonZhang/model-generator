@@ -81,7 +81,6 @@
 
           const data = await response.json();
           if(data && data.plantuml_code){
-            this.isLoading = true;
             let plantumlCode = data.plantuml_code
             console.log("plantumlCode:"+this.designExplanation)
             // 提取 PlantUML 图代码和设计说明
@@ -96,6 +95,7 @@
               this.errorMessage = "无法解析 PlantUML 代码，请检查格式。";
             }
             return
+            this.isLoading = true
             // 生成图片
             this.generateModel();
           }else{
