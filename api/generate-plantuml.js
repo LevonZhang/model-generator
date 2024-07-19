@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
       // 初始化 Google Gemini API 客户端
       const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-Flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   
       const prompt=`你是一个业务领域设计专家，并且精通PlantUML的类图设计。请根据以下领域需求描述生成 PlantUML 类图源代码：\n\n${domainDescription}`
       // 调用 Google Gemini API 生成 PlantUML 代码
