@@ -77,9 +77,9 @@
           const data = await response.json();
           console.log(data)
           if(data && data.plantuml_code){
+            this.isLoading = true;
             this.userInput = data.plantuml_code.replace(/^@startuml|@enduml$/gm, '').trim(); // 去掉 @startuml 和 @enduml
             // 生成图片
-            this.isLoading = true;
             this.generateModel();
           }else{
             this.errorMessage = "设计模型输出内容为空。";
