@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
 
         ## PlantUML Examples:
 
-        \`\`\`plantuml
+        \`\`\`
         @startuml
         class Car
         @enduml
@@ -46,10 +46,6 @@ module.exports = async (req, res) => {
         Author "1" -- "*" Book : writes
         @enduml
         \`\`\`
-
-        Domain Requirements:
-
-        ${domainDescription}
         `;
 
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash",
