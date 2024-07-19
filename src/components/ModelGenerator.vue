@@ -80,7 +80,7 @@
           }
 
           const data = await response.json();
-          if(data && data.plantuml_code){
+          if(data){
             this.userInput = data.plantuml_code; // 从 JSON 对象中获取 plantuml_code
             this.designExplanation = data.design_explanation; // 从 JSON 对象中获取 design_explanation
             this.isLoading = true
