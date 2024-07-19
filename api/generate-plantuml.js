@@ -20,6 +20,7 @@ module.exports = async (req, res) => {
       // 提取生成的 PlantUML 代码
       const plantumlCode = response.text;
   
+      console.log(plantumlCode)
       // 返回生成的 PlantUML 代码
       res.status(200).json({ plantuml_code: plantumlCode });
   

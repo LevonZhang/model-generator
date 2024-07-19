@@ -76,10 +76,14 @@
           }
 
           const data = await response.json();
-          this.userInput = data.plantuml_code.replace(/^@startuml|@enduml$/gm, '').trim(); // 去掉 @startuml 和 @enduml
-
-          // 生成图片
-          this.generateModel();
+          console.log(data)
+          if(data && data.plantuml_code){
+            this.userInput = data.plantuml_code.replace(/^@startuml|@enduml$/gm, '').trim(); // 去掉 @startuml 和 @enduml
+            // 生成图片
+            this.generateModel();
+          }else{
+            this.errorMessage = "设计模型输出内容为空。";
+          }
         } catch (error) {
           console.error("Error designing model:", error);
           this.errorMessage = "设计模型时出错，请检查您的输入或网络连接。";
