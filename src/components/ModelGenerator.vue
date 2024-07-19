@@ -25,8 +25,12 @@
         rows="12"
       ></textarea>
     </div>
-
     <button @click="generateModel" class="button">生成模型</button>
+
+    <div v-if="designExplanation" class="explanation">
+      <h3>设计说明:</h3>
+      <p>{{ designExplanation }}</p>
+    </div>
 
     <div v-if="isLoading" class="diagram-container">
       <div class="loader"></div> 
@@ -51,12 +55,13 @@
         isLoading: false,
         errorMessage: null,
         imageUrl: null,
+        designExplanation: null, // 新增：用于存储设计说明
       };
     },
     methods: {
       async designModel() {
         this.errorMessage = null;
-        this.userInput = ''; // 清空 PlantUML 代码
+        this.userInput = '@startuml\n\n@enduml\n'; // 清空 PlantUML 代码
 
         try {
           // 调用 Google Gemini API 生成 PlantUML 代码
@@ -78,7 +83,16 @@
           console.log(data)
           if(data && data.plantuml_code){
             this.isLoading = true;
-            this.userInput = data.plantuml_code.replace(/^@startuml|@enduml$/gm, '').trim(); // 去掉 @startuml 和 @enduml
+            let plantumlCode = data.plantuml_code
+            // 提取 PlantUML 图代码和设计说明
+            const match = plantumlCode.match(/(@startuml[\s\S]*?@enduml)([\s\S]*)/);
+            if (match) {
+              this.userInput = match[1].trim();
+              this.designExplanation = match[2].replace(/```/g, '').trim(); // 去除 ``` 符号
+            } else {
+              // 处理没有 @enduml 或者格式错误的情况
+              this.errorMessage = "无法解析 PlantUML 代码，请检查格式。";
+            }
             // 生成图片
             this.generateModel();
           }else{
@@ -102,7 +116,7 @@
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              "diagram_source": this.userInput,
+              "diagram_source": this.userInput.replace(/^@startuml|@enduml$/gm, '').trim(); // 去掉 @startuml 和 @enduml,
               "diagram_type": "plantuml",
               "output_format": "png"
             }),
