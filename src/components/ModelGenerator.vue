@@ -110,7 +110,7 @@
         this.errorMessage = null; 
 
         try {
-          let toGenText = this.userInput.replace(/^@startuml|@enduml$/gm, '').trim() // 去掉 @startuml 和 @enduml
+          let toGenText = this.userInput.replace(/^@startuml|@enduml$/gm, '').trim(); // 去掉 @startuml 和 @enduml
           const response = await fetch('/api/generate-diagram', {
             method: "POST",
             headers: {
