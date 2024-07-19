@@ -57,12 +57,9 @@ module.exports = async (req, res) => {
   
       // 调用 Google Gemini API 生成 PlantUML 代码
       const result = await model.generateContent( prompt);
-
-      // 提取生成的 PlantUML 代码
-      const plantumlCode = result.response.text();  
-      console.log("plantumlCode:"+plantumlCode)
+      console.log("result.response[0]:"+result.response[0])
       // 返回生成的 PlantUML 代码
-      res.status(200).json({ plantuml_code: plantumlCode });
+      res.status(200).json(result.response[0]);
   
     } catch (error) {
       console.error("Error generating PlantUML code:", error);
