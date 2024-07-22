@@ -11,51 +11,56 @@ module.exports = async (req, res) => {
       // 初始化 Google Gemini API 客户端
       const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
-      const sys_prompt = `You are a domain modeling expert and proficient in PlantUML class diagram design. Your task is to generate a JSON response containing two fields:
+      const sys_prompt = `你是一个领域建模专家，精通 PlantUML 类图设计。你的任务是根据以下领域需求描述，生成一个 JSON 响应，格式如下：
+                        {
+                          "plantuml_code": "生成的 PlantUML 代码",
+                          "design_explanation": "中文的设计简要说明"
+                        }
 
-        1. \`plantuml_code\`: Contains ONLY the PlantUML code that represents the class diagram based on the following domain requirements description. Please refer to the PlantUML examples below for guidance on syntax and structure.
-        2. \`design_explanation\`: Contains a concise explanation of the design in Chinese.
+                        请注意：
+                        - 只包含基于领域需求描述的 PlantUML 代码和设计说明。
+                        - 只生成 PlantUML 类图代码，不要生成数据库设计或Python、Java等其他编程语言的代码。
 
-        Do NOT include any additional introductions, or code in other programming languages.
+                        ## PlantUML 示例：
 
-        ## PlantUML Examples:
+                        \`\`\`plantuml
+                        @startuml
+                        class Car
+                        @enduml
+                        \`\`\`
 
-        \`\`\`
-        @startuml
-        class Car
-        @enduml
-        \`\`\`
+                        \`\`\`plantuml
+                        @startuml
+                        class User {
+                          - name: string
+                          - age: int
+                        }
+                        @enduml
+                        \`\`\`
 
-        \`\`\`plantuml
-        @startuml
-        class User {
-          - name: string
-          - age: int
-        }
-        @enduml
-        \`\`\`
+                        \`\`\`plantuml
+                        @startuml
+                        class Author {
+                          - name: string
+                        }
+                        class Book {
+                          - title: string
+                        }
+                        Author "1" -- "*" Book : writes
+                        @enduml
+                        \`\`\`
 
-        \`\`\`plantuml
-        @startuml
-        class Author {
-          - name: string
-        }
-        class Book {
-          - title: string
-        }
-        Author "1" -- "*" Book : writes
-        @enduml
-        \`\`\`
-        `;
+                        根据上述要求生成 JSON 响应。`
+
 
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash",
         system_instruction: sys_prompt, });
   
       // 调用 Google Gemini API 生成 PlantUML 代码
       const result = await model.generateContent( prompt);
-      console.log(JSON.stringify(result.response.text(), null, 2));
+      console.log(result.response.text(), null, 2);
       // 返回生成的 PlantUML 代码
-      res.status(200).json(result.response.text());
+      res.status(200).json(JSON.parse(result.response.text()));
   
     } catch (error) {
       console.error("Error generating PlantUML code:", error);
