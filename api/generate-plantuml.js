@@ -10,30 +10,34 @@ module.exports = async (req, res) => {
       const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
       const existingPlantUML = req.body.plantuml_code || ""; // 获取已设计的 PlantUML 代码
-      let sys_prompt = `你是一个领域建模专家，精通 PlantUML 类图设计。你的任务是根据用户的领域需求描述，根据Schema要求生成一个 JSON格式的 响应，
-                        其中plantuml_code是生成的PlantUML类图设计源代码，design_explanation是设计的中文简要说明。
-                        注意：类图中的所有内容都需要用英文表示，不管用户的输入要求是中文还是其他语言。`
+      let sys_prompt = `You are a domain modeling expert and proficient in PlantUML class diagram design. Your task is to generate a JSON formatted response based on the user's domain requirements description and the provided Schema.
+                        The response should include:
+                        1. plantuml_code: the generated PlantUML class diagram source code
+                        2. design_explanation: a brief explanation of the design in Chinese.
+                        Note: All content in the class diagram should be in English, regardless of the language of the user's input.
+                        Note: Please follow the Domain Driven Design (DDD) pattern in your class diagram design. Utilize value objects whenever possible, employ interfaces with clear intentions and no side effects, and strive to use directional arrows to indicate the direction of relationships between classes, specify cardinality, and mark aggregation or composition relationships where applicable.
+                        Generate the JSON response according to the format described above.`
       
       if (existingPlantUML) {
-        sys_prompt += `\n\n请在以下已有的 PlantUML 代码基础上，根据用户输入的领域需求描述进行修改设计：\n\n\`\`\`plantuml\n${existingPlantUML}\n\`\`\`\n`;
+        sys_prompt += `\n\nBased on the existing PlantUML code below, please modify the design according to the domain requirement description entered by the user:\n\n\`\`\`plantuml\n${existingPlantUML}\n\`\`\`\n`;
       } else {
-        sys_prompt += "\n\n请根据用户输入的领域需求描述进行新的设计，并";
+        sys_prompt += "\n\nPlease create a new design based on the domain requirements description entered by the user and";
       }
   
-      sys_prompt += "按照上述格式生成 JSON 响应。"; 
+      sys_prompt += "Generate a JSON response in the above format."; 
 
       const schema = {
-        description: "包含 PlantUML 代码和设计说明的对象",
+        description: "Objects containing PlantUML code and design descriptions",
         type: FunctionDeclarationSchemaType.OBJECT,
         properties: {
           plantuml_code: {
             type: FunctionDeclarationSchemaType.STRING,
-            description: "符合 PlantUML 语法的类图代码",
+            description: "Class diagram code conforming to PlantUML syntax",
             nullable: false,
           },
           design_explanation: {
             type: FunctionDeclarationSchemaType.STRING,
-            description: "中文的设计简要说明",
+            description: "Design brief",
             nullable: false,
           },
         },

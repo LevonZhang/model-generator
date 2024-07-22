@@ -1,25 +1,25 @@
 <template>
   <div class="container">
-    <h1 class="title">领域模型生成器</h1>
+    <h1 class="title">Domain Model Generator</h1>
 
     <div class="input-container">
       <div class="input-group">
-        <label for="domainInput" class="label">领域需求描述:</label>
+        <label for="domainInput" class="label">Domain Requirements:</label>
         <textarea 
           id="domainInput" 
           v-model="domainDescription" 
-          placeholder="用自然语言描述您的领域需求"
+          placeholder="Describe your domain requirements in natural language"
           class="textarea"
-          rows="8"
+          rows="12"
         ></textarea>
       </div>
 
       <div class="input-group">
-        <label for="plantumlInput" class="label">PlantUML 代码:</label>
+        <label for="plantumlInput" class="label">Edit PlantUML code directly if needed:</label>
         <textarea 
           id="plantumlInput" 
           v-model="userInput" 
-          placeholder="输入您的 PlantUML 代码"
+          placeholder="Edit PlantUML code directly if needed"
           class="textarea"
           rows="12"
         ></textarea>
@@ -27,7 +27,7 @@
     </div>
 
     <button @click="designModel" class="button primary">
-      {{ hasDesign ? "去修改设计" : "去设计" }} 
+      {{ hasDesign ? "Modify Design" : "Design" }} 
     </button>
 
     <div v-if="isDesigning" class="designing-message">
@@ -36,14 +36,15 @@
     </div>
 
     <div v-if="designExplanation" class="explanation-container">
-      <h3 class="explanation-title">设计说明:</h3>
+      <h3 class="explanation-title">Design explanation:</h3>
       <p class="explanation-text">{{ designExplanation }}</p>
     </div>
 
     <div v-if="imageUrl" class="diagram-container">
       <img :src="imageUrl" alt="PlantUML Diagram" class="diagram-image" />
-      <button @click="downloadPNG" class="button download">下载 PNG</button>
     </div>
+    
+    <button v-if="imageUrl" @click="downloadPNG" class="button download">Download PNG</button>
 
     <div v-if="errorMessage" class="error-message">
       {{ errorMessage }}
@@ -102,11 +103,11 @@ export default {
           this.isLoading = true;
           this.generateModel();
         } else {
-          this.errorMessage = "设计模型输出内容为空。";
+          this.errorMessage = "Design model output is empty.";
         }
       } catch (error) {
         console.error("Error designing model:", error);
-        this.errorMessage = "设计模型时出错，请检查您的输入或网络连接。";
+        this.errorMessage = "Error designing model. Please check your input or network connection.";
       } finally {
         this.isLoading = false;
         this.isDesigning = false; 
@@ -138,7 +139,7 @@ export default {
         this.imageUrl = URL.createObjectURL(blob); 
       } catch (error) {
         console.error("Error generating diagram:", error);
-        this.errorMessage = "生成图表时出错，请检查您的输入或网络连接。";
+        this.errorMessage = "Error generating diagram. Please check your input or network connection.";
       } finally {
         this.isLoading = false;
       }
