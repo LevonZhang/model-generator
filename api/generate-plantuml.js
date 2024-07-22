@@ -53,7 +53,7 @@ module.exports = async (req, res) => {
   
       // 调用 Google Gemini API 生成 PlantUML 代码
       const result = await model.generateContent( prompt);
-      console.log("result:"+result.response.candidates[0])
+      console.log(JSON.stringify(result.response.candidates[0], null, 2));
       // 返回生成的 PlantUML 代码
       res.status(200).json(result.response.candidates[0]);
   
