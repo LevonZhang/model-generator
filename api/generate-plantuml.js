@@ -75,8 +75,6 @@ module.exports = async (req, res) => {
       const parts = [
         {text},
       ];
-
-      console.log(parts)
     
       const result = await model.generateContent({
         contents: [{ role: "user", parts }],
