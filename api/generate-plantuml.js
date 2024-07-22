@@ -54,7 +54,10 @@ module.exports = async (req, res) => {
 
 
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash",
-        system_instruction: sys_prompt, });
+        systemInstruction: {
+          parts: [{ text: sys_prompt }],
+          role:"model"
+        }});
   
       // 调用 Google Gemini API 生成 PlantUML 代码
       const result = await model.generateContent( prompt);
