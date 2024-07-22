@@ -52,19 +52,42 @@ module.exports = async (req, res) => {
 
                         根据上述要求生成 JSON 响应。`
 
-
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash",
         systemInstruction: {
           parts: [{ text: sys_prompt }],
           role:"model"
         }});
-  
-      // 调用 Google Gemini API 生成 PlantUML 代码
-      const result = await model.generateContent( prompt);
-      console.log(result.response.text(), null, 2);
-      // 返回生成的 PlantUML 代码
-      res.status(200).json(JSON.parse(result.response.text()));
-  
+
+      const generationConfig = {
+        temperature: 0.9,
+        topK: 1,
+        topP: 1,
+        maxOutputTokens: 2048,
+        response_mime_type:'application/json'
+      };
+    
+      const safetySettings = [
+        { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE, },
+        { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,	threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE, },
+        { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE, },
+        { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE, },
+      ];
+    
+      const parts = [
+          {prompt},
+        ];
+    
+      const result = await model.generateContent({
+        contents: [{ role: "user", parts }],
+        generationConfig,
+        safetySettings,
+      });  
+
+      if(result.response.promptFeedback && result.response.promptFeedback.blockReason) {   
+        return { error: `Blocked for ${result.response.promptFeedback.blockReason}` };
+      }
+      const response = result.response;
+      return { response };  
     } catch (error) {
       console.error("Error generating PlantUML code:", error);
       res.status(500).send("Error generating PlantUML code");
