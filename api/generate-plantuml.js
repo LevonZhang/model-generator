@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
       const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
       const existingPlantUML = req.body.plantuml_code || ""; // 获取已设计的 PlantUML 代码
-      const sys_prompt = `你是一个领域建模专家，精通 PlantUML 类图设计。你的任务是根据用户的领域需求描述，根据Schema要求生成一个 JSON格式的 响应，
+      let sys_prompt = `你是一个领域建模专家，精通 PlantUML 类图设计。你的任务是根据用户的领域需求描述，根据Schema要求生成一个 JSON格式的 响应，
                         其中plantuml_code是生成的PlantUML类图设计源代码，design_explanation是设计的中文简要说明。
                         注意：类图中的所有内容都需要用英文表示，不管用户的输入要求是中文还是其他语言。`
       
