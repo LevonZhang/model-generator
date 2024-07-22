@@ -32,7 +32,7 @@
 
     <div v-if="isDesigning" class="designing-message">
       <div class="loader"></div>
-      <p>设计中...</p>
+      <p>Designing...</p>
     </div>
 
     <div v-if="designExplanation" class="explanation-container">

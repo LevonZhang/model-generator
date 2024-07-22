@@ -13,8 +13,8 @@ module.exports = async (req, res) => {
       let sys_prompt = `You are a domain modeling expert and proficient in PlantUML class diagram design. Your task is to generate a JSON formatted response based on the user's domain requirements description and the provided Schema.
                         The response should include:
                         1. plantuml_code: the generated PlantUML class diagram source code
-                        2. design_explanation: a brief explanation of the design in Chinese.
-                        Note: All content in the class diagram should be in English, regardless of the language of the user's input.
+                        2. design_explanation: a brief explanation of the design.
+                        Note: All content should be in English, regardless of the language of the user's input.
                         Note: Please follow the Domain Driven Design (DDD) pattern in your class diagram design. 
                         Please utilize value objects whenever possible, employ interfaces with clear intentions and no side effects.
                         Please strive to use directional arrows to indicate the direction of relationships between classes, specify cardinality, and mark aggregation or composition relationships where applicable. 
@@ -23,6 +23,7 @@ module.exports = async (req, res) => {
                         "1" represents the cardinality constraint that a CustomerAccount belongs to one Customer, 
                         and "1..*" represents that one Customer can have multiple CustomerAccounts, 
                         and accounts represents the relation name between Customer and CustomerAccount. 
+                        Include class methods in the design whenever possible.
                         Generate the JSON response according to the format described above.`
       
       if (existingPlantUML) {
