@@ -9,46 +9,9 @@ module.exports = async (req, res) => {
       // 初始化 Google Gemini API 客户端
       const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
-      const sys_prompt = `你是一个领域建模专家，精通 PlantUML 类图设计。你的任务是根据以下领域需求描述，生成一个 JSON 响应，格式如下：
-                        {
-                          "plantuml_code": "生成的 PlantUML 代码",
-                          "design_explanation": "中文的设计简要说明"
-                        }
-
-                        请注意：
-                        - 只包含基于领域需求描述的 PlantUML 代码和设计说明。
-                        - 只生成 PlantUML 类图代码，不要生成数据库设计或Python、Java等其他编程语言的代码。
-
-                        ## PlantUML 示例：
-
-                        \`\`\`plantuml
-                        @startuml
-                        class Car
-                        @enduml
-                        \`\`\`
-
-                        \`\`\`plantuml
-                        @startuml
-                        class User {
-                          - name: string
-                          - age: int
-                        }
-                        @enduml
-                        \`\`\`
-
-                        \`\`\`plantuml
-                        @startuml
-                        class Author {
-                          - name: string
-                        }
-                        class Book {
-                          - title: string
-                        }
-                        Author "1" -- "*" Book : writes
-                        @enduml
-                        \`\`\`
-
-                        根据上述要求生成 JSON 响应。`
+      const sys_prompt = `你是一个领域建模专家，精通 PlantUML 类图设计。你的任务是根据用户的领域需求描述，根据Schema要求生成一个 JSON格式的 响应，
+                        其中plantuml_code是生成的PlantUML类图设计源代码，design_explanation是设计的中文简要说明。
+                        请根据用户输入的要求进行设计，并按照上述格式生成 JSON 响应。`
 
         const schema = {
           description: "包含 PlantUML 代码和设计说明的对象",
@@ -69,19 +32,9 @@ module.exports = async (req, res) => {
         };  
 
       const generationConfig = {
-        temperature: 0.9,
-        topK: 1,
-        topP: 1,
-        maxOutputTokens: 2048,
         response_mime_type:'application/json',
         responseSchema: schema,
       }
-
-      // const model = genAI.getGenerativeModel({ model: MODEL_NAME,
-      //   systemInstruction: {
-      //     parts: [{ text: sys_prompt }],
-      //     role:"model"
-      //   }});
 
       const model = genAI.getGenerativeModel({
         model: MODEL_NAME,
