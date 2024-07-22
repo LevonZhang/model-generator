@@ -4,7 +4,7 @@ module.exports = async (req, res) => {
     try {
       const MODEL_NAME = "gemini-1.5-pro-latest";
       // 使用 dynamic import() 导入 Google Generative AI
-      const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = await import('@google/generative-ai');
+      const { GoogleGenerativeAI, FunctionDeclarationSchemaType} = await import('@google/generative-ai');
   
       // 初始化 Google Gemini API 客户端
       const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
