@@ -162,17 +162,93 @@ export default {
 };
 </script>
 
-<style scoped>
-/* ... (其他样式) */
+<style>
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  font-family: sans-serif;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
 
 .input-container {
   display: flex;
   gap: 1rem;
+  width: 100%;
+  max-width: 800px; /* 调整最大宽度 */
+}
+
+.input-group {
+  flex: 1; /* 使两个 input-group 平分宽度 */
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.button {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #eee;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  background-color: #ddd;
+}
+
+.button.primary {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.button.primary:hover {
+  background-color: #45a049;
+}
+
+.designing-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 5px solid #3498db;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .explanation-container {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;  /* 调整最大宽度 */
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 1rem;
@@ -188,16 +264,29 @@ export default {
   white-space: pre-wrap; 
 }
 
-.designing-message {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
+.diagram-container {
+  margin-top: 2rem;
+  text-align: center;
+  width: 100%;
+  max-width: 800px; /* 调整最大宽度 */
+}
+
+.diagram-image {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .button.download {
   background-color: #2196F3;
   color: white;
   margin-top: 1rem;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 2rem;
 }
 </style>
