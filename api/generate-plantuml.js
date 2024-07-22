@@ -2,6 +2,7 @@
 
 module.exports = async (req, res) => {
     try {
+      const MODEL_NAME = "gemini-1.5-pro-latest";
       // 使用 dynamic import() 导入 Google Generative AI
       const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = await import('@google/generative-ai');
   
@@ -49,7 +50,7 @@ module.exports = async (req, res) => {
 
                         根据上述要求生成 JSON 响应。`
 
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash",
+      const model = genAI.getGenerativeModel({ model: MODEL_NAME,
         systemInstruction: {
           parts: [{ text: sys_prompt }],
           role:"model"
@@ -73,7 +74,7 @@ module.exports = async (req, res) => {
       // 获取用户输入的领域需求描述
       const text = req.body.domain_description;
       const parts = [
-        {text},
+        {text: text},
       ];
     
       const result = await model.generateContent({
