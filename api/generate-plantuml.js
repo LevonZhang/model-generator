@@ -2,9 +2,6 @@
 
 module.exports = async (req, res) => {
     try {
-      // 获取用户输入的领域需求描述
-      const prompt = req.body.domain_description;
-  
       // 使用 dynamic import() 导入 Google Generative AI
       const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = await import('@google/generative-ai');
   
@@ -73,9 +70,13 @@ module.exports = async (req, res) => {
         { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE, },
       ];
     
+      // 获取用户输入的领域需求描述
+      const text = req.body.domain_description;
       const parts = [
-          {prompt},
-        ];
+        {text},
+      ];
+
+      console.log(parts)
     
       const result = await model.generateContent({
         contents: [{ role: "user", parts }],
