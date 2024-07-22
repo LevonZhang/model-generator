@@ -50,44 +50,58 @@ module.exports = async (req, res) => {
 
                         根据上述要求生成 JSON 响应。`
 
-      const model = genAI.getGenerativeModel({ model: MODEL_NAME,
-        systemInstruction: {
-          parts: [{ text: sys_prompt }],
-          role:"model"
-        }});
+        const schema = {
+          description: "包含 PlantUML 代码和设计说明的对象",
+          type: FunctionDeclarationSchemaType.OBJECT,
+          properties: {
+            plantuml_code: {
+              type: FunctionDeclarationSchemaType.STRING,
+              description: "符合 PlantUML 语法的类图代码",
+              nullable: false,
+            },
+            design_explanation: {
+              type: FunctionDeclarationSchemaType.STRING,
+              description: "中文的设计简要说明",
+              nullable: false,
+            },
+          },
+          required: ["plantuml_code", "design_explanation"],
+        };  
 
       const generationConfig = {
         temperature: 0.9,
         topK: 1,
         topP: 1,
         maxOutputTokens: 2048,
-        response_mime_type:'application/json'
-      };
-    
-      const safetySettings = [
-        { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE, },
-        { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,	threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE, },
-        { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE, },
-        { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE, },
-      ];
+        response_mime_type:'application/json',
+        responseSchema: schema,
+      }
+
+      // const model = genAI.getGenerativeModel({ model: MODEL_NAME,
+      //   systemInstruction: {
+      //     parts: [{ text: sys_prompt }],
+      //     role:"model"
+      //   }});
+
+      const model = genAI.getGenerativeModel({
+        model: MODEL_NAME,
+        systemInstruction: {
+          parts: [{ text: sys_prompt }],
+          role:"model"
+        },
+        generationConfig: generationConfig,
+      });  
     
       // 获取用户输入的领域需求描述
-      const text = req.body.domain_description;
-      const parts = [
-        {text: text},
-      ];
-    
-      const result = await model.generateContent({
-        contents: [{ role: "user", parts }],
-        generationConfig,
-        safetySettings,
-      });  
+      const requestText = req.body.domain_description;
+      const result = await model.generateContent(requestText);  
 
       if(result.response.promptFeedback && result.response.promptFeedback.blockReason) {   
         return { error: `Blocked for ${result.response.promptFeedback.blockReason}` };
       }
-      const response = result.response;
-      return { response };  
+      let text = result.response.candidates[0].content.parts[0].text;
+      console.log(JSON.parse(text));
+      res.status(200).json(JSON.parse(text));
     } catch (error) {
       console.error("Error generating PlantUML code:", error);
       res.status(500).send("Error generating PlantUML code");
