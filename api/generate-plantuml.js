@@ -15,7 +15,14 @@ module.exports = async (req, res) => {
                         1. plantuml_code: the generated PlantUML class diagram source code
                         2. design_explanation: a brief explanation of the design in Chinese.
                         Note: All content in the class diagram should be in English, regardless of the language of the user's input.
-                        Note: Please follow the Domain Driven Design (DDD) pattern in your class diagram design. Utilize value objects whenever possible, employ interfaces with clear intentions and no side effects, and strive to use directional arrows to indicate the direction of relationships between classes, specify cardinality, and mark aggregation or composition relationships where applicable.
+                        Note: Please follow the Domain Driven Design (DDD) pattern in your class diagram design. 
+                        Please utilize value objects whenever possible, employ interfaces with clear intentions and no side effects.
+                        Please strive to use directional arrows to indicate the direction of relationships between classes, specify cardinality, and mark aggregation or composition relationships where applicable. 
+                        For example: Customer "1" *--> "1..*" CustomerAccount : accounts, 
+                        where the * in *--> represents aggregation relationship, --> represents a line with an arrow, 
+                        "1" represents the cardinality constraint that a CustomerAccount belongs to one Customer, 
+                        and "1..*" represents that one Customer can have multiple CustomerAccounts, 
+                        and accounts represents the relation name between Customer and CustomerAccount. 
                         Generate the JSON response according to the format described above.`
       
       if (existingPlantUML) {
