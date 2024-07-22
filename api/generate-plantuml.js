@@ -99,8 +99,8 @@ module.exports = async (req, res) => {
       if(result.response.promptFeedback && result.response.promptFeedback.blockReason) {   
         return { error: `Blocked for ${result.response.promptFeedback.blockReason}` };
       }
-      let text = result.response.candidates[0].content.parts[0].text;
-      console.log(JSON.parse(text));
+      let text = result.response.text();
+      console.log(text);
       res.status(200).json(JSON.parse(text));
     } catch (error) {
       console.error("Error generating PlantUML code:", error);
