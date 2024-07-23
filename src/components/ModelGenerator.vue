@@ -174,9 +174,10 @@ export default {
       this.designExplanation = null;
       this.imageUrl = null;
       this.errorMessage = null;
-      this.isLoading = false,
-      this.isDesigning = false,
+      this.isLoading = false;
+      this.isDesigning = false;
     },
+  }  
 };
 </script>
 
