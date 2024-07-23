@@ -26,9 +26,12 @@
       </div>
     </div>
 
-    <button @click="designModel" class="button primary">
-      {{ hasDesign ? "Modify Design" : "Design" }} 
-    </button>
+    <div class="button-group"> 
+      <button @click="designModel" class="button primary">
+        {{ hasDesign ? "Modify Design" : "Design" }} 
+      </button>
+      <button @click="clearDesign" class="button">Clear Design</button>
+    </div>
 
     <div v-if="isDesigning" class="designing-message">
       <div class="loader"></div>
@@ -165,11 +168,25 @@ export default {
         this.hasDesign = true;
       }
     },
-  },
+    clearDesign() {
+      this.domainDescription = '';
+      this.userInput = '';
+      this.designExplanation = null;
+      this.imageUrl = null;
+      this.errorMessage = null;
+      this.isLoading = false,
+      this.isDesigning = false,
+    },
 };
 </script>
 
 <style>
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
 .container {
   display: flex;
   flex-direction: column;
