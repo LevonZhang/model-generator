@@ -9,7 +9,7 @@
           id="domainInput" 
           v-model="domainDescription" 
           placeholder="Describe your domain requirements in natural language"
-          class="textarea"
+          class="requirement-textarea"
           rows="12"
         ></textarea>
       </div>
@@ -20,7 +20,7 @@
           id="plantumlInput" 
           v-model="userInput" 
           placeholder="Edit PlantUML code directly if needed"
-          class="textarea"
+          class="plantuml-textarea"
           rows="12"
         ></textarea>
       </div>
@@ -219,12 +219,22 @@ export default {
   font-weight: bold;
 }
 
-.textarea {
+.requirement-textarea {
   width: 100%;
   padding: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   resize: vertical;
+  font-family: 'Courier New', monospace; 
+}
+
+.plantuml-textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: 'Georgia', monospace; 
 }
 
 .button {
