@@ -203,7 +203,7 @@ export default {
 
 .input-container {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
   width: 100%;
   max-width: 800px; /* 调整最大宽度 */
 }
