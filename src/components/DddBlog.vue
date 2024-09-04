@@ -1,7 +1,7 @@
 <template>
     <div class="iframe-container">
       <iframe 
-        src="https://ddd-talking.com" 
+        src="https://zlianhua.github.io/ddd-blog/" 
         title="Domain Driven Design Blogs"
       ></iframe>
     </div>
