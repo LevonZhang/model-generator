@@ -1,6 +1,11 @@
 <template>
     <div class="container">
-      <h1 class="title">Sequence Diagram Generator</h1>
+      <h2 class="title">AI-Powered Sequence Diagram Generator</h2>
+      <p class="description">
+        Visualize your system interactions with ease using our AI-powered sequence diagram generator! 
+        Describe the sequence of events in natural language, and our tool will automatically generate a PlantUML sequence diagram. 
+        Customize the generated code for even more precise representation of your system's behavior. 
+      </p>
   
       <div class="input-container">
         <div class="input-group">

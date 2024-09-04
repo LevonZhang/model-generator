@@ -1,6 +1,11 @@
 <template>
   <div class="container">
-    <h1 class="title">Object Diagram Generator</h1>
+    <h2 class="title">AI-Powered Object Diagram Generator</h2>
+    <p class="description">
+      Effortlessly design your Object Diagram domain models with our AI-powered generator! 
+      Simply describe your requirements in natural language, and our tool will automatically generate a PlantUML class diagram. 
+      You can even edit the generated code directly for further customization. Perfect for software developers and architects!
+    </p>
 
     <div class="input-container">
       <div class="input-group">
