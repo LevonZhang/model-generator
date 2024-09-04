@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1 class="title">Domain Model Generator</h1>
+    <h1 class="title">Object Diagram Generator</h1>
 
     <div class="input-container">
       <div class="input-group">
@@ -8,7 +8,7 @@
         <textarea 
           id="domainInput" 
           v-model="domainDescription" 
-          placeholder="Describe your domain requirements in natural language"
+          :placeholder="inputSample"
           class="requirement-textarea"
           rows="12"
         ></textarea>
@@ -19,7 +19,7 @@
         <textarea 
           id="plantumlInput" 
           v-model="userInput" 
-          placeholder="Edit PlantUML code directly if needed"
+          :placeholder="umlSample"
           class="plantuml-textarea"
           rows="12"
         ></textarea>
@@ -59,6 +59,38 @@
 export default {
   data() {
     return {
+      inputSample: `Describe your domain requirements in natural language. For example: 
+I need a model for customers and their addresses. Customers can be either individuals or businesses. Individual customers have a name and gender, while businesses have a company code.
+Each customer can have one or more addresses, which include information like state, city, street, and details.`,
+      umlSample: `@startuml
+  class Customer {
+  - customerId: Long
+  + addAddress(address: Address): void
+} 
+
+class Individual extends Customer {
+  - firstName: String
+  - lastName: String
+  - gender: Gender
+  + getFullName(): String
+} 
+
+class Business extends Customer {
+  - companyCode: String
+  - companyName: String
+  + getContactName(): String
+} 
+
+class Address {
+  - street: String
+  - city: String
+  - state: String
+  - details: String 
+}
+
+Customer "1" *--> "1..*" Address : addresses
+
+@endtuml`,
       domainDescription: '',
       userInput: '',
       isLoading: false,
@@ -83,7 +115,7 @@ export default {
       this.errorMessage = null;
 
       try {
-        const response = await fetch('/api/generate-plantuml', {
+        const response = await fetch('/api/generate-objectDiagramUml', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -192,8 +224,9 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem;
+  padding: 1rem;  /* 减少内边距 */
   font-family: sans-serif;
+  width: 70%
 }
 
 .title {
@@ -203,13 +236,13 @@ export default {
 
 .input-container {
   display: flex;
-  gap: 2rem;
+  gap: 3rem;  /* 增加间距 */
   width: 100%;
-  max-width: 800px; /* 调整最大宽度 */
+  max-width: 1200px; /* 增加最大宽度 */
 }
 
 .input-group {
-  flex: 1; /* 使两个 input-group 平分宽度 */
+  flex: 1 1 400px; /* 设置最小宽度并允许扩展 */
   margin-bottom: 1rem;
 }
 

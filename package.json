@@ -1,5 +1,5 @@
 {
-    "name": "model-generator",
+    "name": "ModelWise",
     "version": "0.1.0",
     "private": true,
     "scripts": {
@@ -16,7 +16,8 @@
         "mime-types": "^2.1.35",
         "node-fetch": "^3.3.2",
         "serve": "^14.2.3",
-        "vue": "^3.4.31"
+        "vue": "^3.4.31",
+        "vue-router": "^4.4.3"
     },
     "devDependencies": {
         "@vue/cli-service": "^5.0.8",
