@@ -61,6 +61,7 @@
 </template>
 
 <script>  
+import { generateUUID } from '@/utils/common.js'; // 引入公共函数
 export default {
   data() {
     return {
@@ -193,11 +194,6 @@ Customer "1" *--> "1..*" Address : addresses
       document.body.removeChild(link);
     },
 
-    generateUUID() { // 生成 UUID 的函数
-      return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-      );
-    },
     updateDesignButton() {
       if (!this.domainDescription) {
         this.hasDesign = false;
@@ -219,147 +215,5 @@ Customer "1" *--> "1..*" Address : addresses
 </script>
 
 <style>
-.button-group {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;  /* 减少内边距 */
-  font-family: sans-serif;
-  width: 70%
-}
-
-.title {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-}
-
-.input-container {
-  display: flex;
-  gap: 3rem;  /* 增加间距 */
-  width: 100%;
-  max-width: 1200px; /* 增加最大宽度 */
-}
-
-.input-group {
-  flex: 1 1 400px; /* 设置最小宽度并允许扩展 */
-  margin-bottom: 1rem;
-}
-
-.label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-}
-
-.requirement-textarea {
-  width: 100%;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: vertical;
-  font-family: 'Courier New', monospace; 
-}
-
-.plantuml-textarea {
-  width: 100%;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: vertical;
-  font-family: 'Georgia', monospace; 
-}
-
-.button {
-  padding: 0.8rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  background-color: #eee;
-  color: #333;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.button:hover {
-  background-color: #ddd;
-}
-
-.button.primary {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.button.primary:hover {
-  background-color: #45a049;
-}
-
-.designing-message {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.loader {
-  width: 48px;
-  height: 48px;
-  border: 5px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 5px solid #3498db;
-  animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.explanation-container {
-  width: 100%;
-  max-width: 800px;  /* 调整最大宽度 */
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 1rem;
-  margin-top: 2rem;
-}
-
-.explanation-title {
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
-}
-
-.explanation-text {
-  white-space: pre-wrap; 
-}
-
-.diagram-container {
-  margin-top: 2rem;
-  text-align: center;
-  width: 100%;
-  max-width: 800px; /* 调整最大宽度 */
-}
-
-.diagram-image {
-  max-width: 100%;
-  height: auto;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.button.download {
-  background-color: #2196F3;
-  color: white;
-  margin-top: 1rem;
-}
-
-.error-message {
-  color: red;
-  font-weight: bold;
-  margin-top: 2rem;
-}
 </style>
