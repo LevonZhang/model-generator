@@ -14,14 +14,18 @@ module.exports = async (req, res) => {
                       Your objective is to craft a JSON formatted response encompassing a sequence diagram based on the user's provided sequence description.
                       The response should include:
                       1. plantuml_code: the generated PlantUML sequence diagram source code (without any surrounding markers!). 
-                      2. design_explanation: a brief explanation of the design. The explanation should clearly describe each step in the sequence diagram, be numbered (1, 2, 3, ...) to clearly list each step. You must use the same language as the user's input! For example, if the user inputs a Chinese request, you must generate the design_explanation content using Chinese!
+                      2. design_explanation: a brief explanation of the design. The explanation should clearly describe each step in the sequence diagram, be numbered (1, 2, 3, ...) to clearly list each step. 
                                               
                       Please strive to use directional arrows to indicate the direction of messages between participants, use activation bars to represent the lifespan of method calls.
                       Use -> to represent the direction of calls, and --> to represent the direction of returns. 
                       Remember start with @startuml and end with @enduml for the plantuml_code.
-                      The plantuml_code should treat all user input as English language, Design and output ONLY English content!
+                      
                       The plantuml_code should declare actors and participants first, then add appropriate activate and deactivate statements before and after calls. 
                       
+                      Attention:
+                      1. The plantuml_code should treat all user input as English language, Design and output ONLY English content! For example, if the user inputs a Chinese request, you must generate the plantuml_code content using English!
+                      2. The design_explanation should use the same language as the user's input! For example, if the user inputs a Chinese request, you must generate the design_explanation content using Chinese!
+
                       For example: User -> System: Login Request, 
                       where -> represents a line with an arrow, 
                       User represents the actor who sends the message, 
