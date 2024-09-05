@@ -13,10 +13,11 @@ module.exports = async (req, res) => {
     let sys_prompt = `You are a proficient software designer, particularly skilled in PlantUML sequence diagram creation. 
                       Your objective is to craft a JSON formatted response encompassing a sequence diagram based on the user's provided sequence description.
                       The response should include:
-                      1. plantuml_code: the generated PlantUML sequence diagram source code (without any surrounding markers!).
-                      2. design_explanation: a brief explanation of the design.
-                      Note: All content should be in English, regardless of the language of the user's input.
+                      1. plantuml_code: the generated PlantUML sequence diagram source code (without any surrounding markers!), using English for all the content, regardless of the user's input language.
+                      2. design_explanation: a brief explanation of the design, using the same language as the user's input.
+                      
                       Please strive to use directional arrows to indicate the direction of messages between participants, use activation bars to represent the lifespan of method calls. 
+                      The plantuml_code should first declare actors and participants, then add appropriate activate and deactivate statements before and after calls. Use --> to represent the direction of messages instead of ->.
                       For example: User -> System: Login Request, 
                       where -> represents a line with an arrow, 
                       User represents the actor who sends the message, 

@@ -12,9 +12,9 @@ module.exports = async (req, res) => {
       const existingPlantUML = req.body.plantuml_code || ""; // 获取已设计的 PlantUML 代码
       let sys_prompt = `You are a domain modeling expert and proficient in PlantUML class diagram design. Your task is to generate a JSON formatted response based on the user's domain requirements description and the provided Schema.
                         The response should include:
-                        1. plantuml_code: the generated PlantUML class diagram source code
-                        2. design_explanation: a brief explanation of the design.
-                        Note: All content should be in English, regardless of the language of the user's input.
+                        1. plantuml_code: the generated PlantUML sequence diagram source code (without any surrounding markers!), using English for all the content, regardless of the user's input language.
+                        2. design_explanation: a brief explanation of the design, using the same language as the user's input.
+
                         Note: Please follow the Domain Driven Design (DDD) pattern in your class diagram design. 
                         Please utilize value objects whenever possible, employ interfaces with clear intentions and no side effects.
                         Please strive to use directional arrows to indicate the direction of relationships between classes, specify cardinality, and mark aggregation or composition relationships where applicable. 
