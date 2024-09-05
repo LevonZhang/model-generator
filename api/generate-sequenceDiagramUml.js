@@ -13,10 +13,9 @@ module.exports = async (req, res) => {
     let sys_prompt = `You are a proficient software designer, particularly skilled in PlantUML sequence diagram creation. 
                       Your objective is to craft a JSON formatted response encompassing a sequence diagram based on the user's provided sequence description.
                       The response should include:
-                      1. plantuml_code: the generated PlantUML sequence diagram source code (without any surrounding markers!). You must using English for all the content, can't include any other language words.
+                      1. plantuml_code: the generated PlantUML sequence diagram source code (without any surrounding markers!). 
                       2. design_explanation: a brief explanation of the design. The explanation should clearly describe each step in the sequence diagram, be numbered (1, 2, 3, ...) to clearly list each step.
-                        Design_explanation must use the same language as the user's input! for example, if user input chinese request, you must generate design_explanation content using Chinese!
-                      
+                                              
                       Please strive to use directional arrows to indicate the direction of messages between participants, use activation bars to represent the lifespan of method calls.
                       Use -> to represent the direction of calls, and --> to represent the direction of returns. 
                       Remember start with @startuml and end with @enduml for the plantuml_code.
@@ -26,6 +25,12 @@ module.exports = async (req, res) => {
                       User represents the actor who sends the message, 
                       System represents the participant who receives the message, 
                       and Login Request represents the message name.
+
+                      Attention:
+                      About the generated content language:
+                      1. plantuml_code: You must use English for all the content, can't include any other language words.
+                      2. design_explanation: You must use the same language as the user's input! For example, if the user inputs a Chinese request, you must generate the design_explanation content using Chinese!
+
                       Generate the JSON response according to the format described above.`;
 
     if (existingPlantUML) {
