@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
                       The plantuml_code should declare actors and participants first, then add appropriate activate and deactivate statements before and after calls. 
                       
                       Attention:
-                      1. The plantuml_code should treat all user input as English language, Design and output ONLY English content! For example, if the user inputs a Chinese request, you must generate the plantuml_code content using English!
+                      1. The plantuml_code should generate all content in English, regardless of the user's input language! CAN'T include ANY OTHER language words! Is's very important! For example, if the user inputs a Chinese request, you must generate the plantuml_code content using English!
                       2. The design_explanation should use the same language as the user's input! For example, if the user inputs a Chinese request, you must generate the design_explanation content using Chinese!
 
                       For example: User -> System: Login Request, 
