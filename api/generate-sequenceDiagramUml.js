@@ -22,10 +22,11 @@ module.exports = async (req, res) => {
                         - Start with @startuml and end with @enduml.
                         - Declare actors and participants first, then add appropriate "activate" and "deactivate" statements before and after calls.
                         - Use "->" to represent the direction of calls, and "-->" to represent the direction of returns.
-                        - The PlantUML code **must be entirely in English**, even if the user’s input language is not English.
+                        - The PlantUML code **must be entirely in English**, even if the user’s input language is not English. 
+                        - **Translate any non-English descriptions into English**.
 
                       2. **design_explanation**:
-                        - Use the same language as the user's input.
+                        - Use the same language as the user's input. 
                         - The explanation should clearly describe each step of the sequence diagram.
 
                       Generate the JSON response according to the format described above.`;
