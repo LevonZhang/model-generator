@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
 
                       Attention:
                       About the generated content language:
-                      1. plantuml_code: You must use English for all the content, can't include any other language words.
+                      1. plantuml_code: You must only use English always for all the content! Can't include ANY OTHER language words. Regardless of the language of the design_explanation or the user's input!
                       2. design_explanation: You must use the same language as the user's input! For example, if the user inputs a Chinese request, you must generate the design_explanation content using Chinese!
 
                       Generate the JSON response according to the format described above.`;
