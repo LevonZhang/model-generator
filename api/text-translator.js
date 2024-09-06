@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
       const targetLanguage = req.body.targetLanguage || 'en'; // Get target language from request
       const textToTranslate = req.body.textToTranslate; // Get text to translate
   
-      const chunkSize = 1000; // Set the chunk size for translation
+      const chunkSize = 500; // Set the chunk size for translation
   
       let translatedText = '';
   
