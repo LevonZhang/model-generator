@@ -9,6 +9,8 @@ module.exports = async (req, res) => {
   
       const targetLanguage = req.body.targetLanguage || 'en'; // Get target language from request
       const textToTranslate = req.body.textToTranslate; // Get text to translate
+
+      const DOMPurify = require('dompurify');
   
       const chunkSize = 3000; // Set the chunk size for translation
   
@@ -55,7 +57,8 @@ module.exports = async (req, res) => {
           return { error: `Blocked for ${result.response.promptFeedback.blockReason}` };
         }
         let text = result.response.text();
-        translatedText += JSON.parse(text).translatedText; 
+        let translatedText = JSON.parse(text).translatedText; 
+        translatedText = DOMPurify.sanitize(translatedText); // Sanitize the HTML
       }
       console.log(translatedText);
       res.status(200).json({ translatedText }); 
