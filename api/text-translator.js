@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
       for (let i = 0; i < textToTranslate.length; i += chunkSize) {
         const chunk = textToTranslate.slice(i, i + chunkSize);
   
-        const sys_prompt = `Translate the following text into ${targetLanguage}: \n\n${chunk}`;
+        const sys_prompt = `Translate the following text into ${targetLanguage}, preserving any formatting like paragraph breaks, line breaks, and lists: \n\n${chunk}`;
   
         const schema = {
           description: "Objects containing translated text",
