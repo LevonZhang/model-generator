@@ -11,6 +11,7 @@ module.exports = async (req, res) => {
       const textToTranslate = req.body.textToTranslate; // Get text to translate
 
       const DOMPurify = require('dompurify');
+      const { JSDOM } = require('jsdom'); 
   
       const chunkSize = 3000; // Set the chunk size for translation
   
@@ -58,6 +59,9 @@ module.exports = async (req, res) => {
         }
         let text = result.response.text();
         let translatedText = JSON.parse(text).translatedText; 
+        // Create a JSDOM instance and initialize DOMPurify
+        const window = new JSDOM('').window;
+        DOMPurify.sanitize = DOMPurify(window);
         translatedText = DOMPurify.sanitize(translatedText); // Sanitize the HTML
       }
       console.log(translatedText);

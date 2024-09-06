@@ -18,6 +18,7 @@
         "cors": "^2.8.5",
         "dompurify": "^3.1.6",
         "dotenv": "^16.4.5",
+        "jsdom": "^25.0.0",
         "mime-types": "^2.1.35",
         "node-fetch": "^3.3.2",
         "serve": "^14.2.3",
