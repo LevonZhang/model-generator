@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
 
         console.log(chunk);
   
-        const sys_prompt = `Translate the following text into ${targetLanguage}, preserving any formatting like paragraph breaks, line breaks, and lists: \n\n${chunk}`;
+        const sys_prompt = `Translate the following text into ${targetLanguage}, preserving any formatting like paragraph breaks, line breaks, and lists, Do not translate HTML tags themselves: \n\n${chunk}`;
   
         const schema = {
           description: "Objects containing translated text",
@@ -58,11 +58,11 @@ module.exports = async (req, res) => {
           return { error: `Blocked for ${result.response.promptFeedback.blockReason}` };
         }
         let text = result.response.text();
-        let translatedText = JSON.parse(text).translatedText; 
+        translatedText = JSON.parse(text).translatedText; 
         // Create a JSDOM instance and initialize DOMPurify
-        const window = new JSDOM('').window;
-        const DOMPurify = createDOMPurify(window);
-        translatedText = DOMPurify.sanitize(translatedText); // Sanitize the HTML
+        // const window = new JSDOM('').window;
+        // const DOMPurify = createDOMPurify(window);
+        // translatedText = DOMPurify.sanitize(translatedText); // Sanitize the HTML
       }
       console.log("translatedText: "+translatedText);
       res.status(200).json({ translatedText }); 
