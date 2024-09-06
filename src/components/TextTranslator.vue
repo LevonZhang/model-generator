@@ -56,6 +56,7 @@ export default {
 
       const chunkSize = 500; // Define chunk size here
       const textChunks = this.splitTextIntoChunks(this.inputText, chunkSize);
+      const translatedChunks = []; // Array to store translated chunks
 
       let translatedText = '';
 
@@ -77,17 +78,16 @@ export default {
             throw new Error(`API request failed with status ${response.status}`);
           }
 
-          response.text().then(data => { // Use .then to log after data is available
-            console.log(index + "部分data:" + data); // Now this should log correctly
-            translatedText += data;
-            console.log(index + "部分translatedText:" + translatedText);
-          });
+          response.text().then(data => {
+            translatedChunks[index] = data; // Store translated chunk with index
+            console.log(""+index + "部分data:" + data);
 
-          if (index === textChunks.length - 1) {
-            // All chunks have been translated
-            this.outputText = translatedText;
-            this.isDesigning = false;
-          }
+            // Check if all chunks have been translated
+            if (translatedChunks.length === textChunks.length) {
+              this.outputText = translatedChunks.sort((a, b) => a.index - b.index).map(chunk => chunk.translatedText).join(''); // Combine in order
+              this.isDesigning = false;
+            }
+          });
         } catch (error) {
           console.error('Translation error:', error);
           this.errorMessage = "Error during translate. Please check your input or network connection.";
