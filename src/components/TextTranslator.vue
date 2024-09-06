@@ -99,18 +99,15 @@ export default {
   margin-bottom: 20px;
 }
 
-.translator > div {
-  flex-grow: 1; /* Allow text areas to grow to fill available space */
-}
-
 .input-area,
 .output-area {
-  width: 50%;
+  display: flex; /* Use flexbox to manage height */
+  flex-direction: column; 
+  width: 48%;
   padding: 10px;
   border: 1px solid #ddd;
   margin: 0 10px;
   box-sizing: border-box;
-  min-height: 400px; /* Adjust as needed */
 }
 
 .language-selector {
@@ -144,12 +141,13 @@ button:hover {
   background-color: #45a049;
 }
 
-.translator > div {
-  height: 300px; /* Adjust height as needed */
-}
-
-.translator > div div {
-  height: 100%;
-  overflow-y: auto;
+.input-area > div,
+.output-area > div { /* Target the inner div */
+  flex-grow: 1;  /* Allow the div to grow */
+  min-height: 400px; /* Set a minimum height */
+  height: 450px; /* Set a fixed height */
+  padding: 10px;
+  border: 1px solid #ddd;
+  overflow-y: auto; /* Add scrollbar if needed */
 }
 </style>

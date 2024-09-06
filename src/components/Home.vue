@@ -4,7 +4,7 @@
   
       <div class="feature-section">
         <div class="feature">
-          <router-link to="/object-diagram-generator" class="title">AI-Powered Object Diagram Generator</router-link>
+          <h2 class="title">AI-Powered Object Diagram Generator</h2>
           <p class="description">
             Effortlessly design your Object Diagram domain models with our AI-powered generator! 
             Simply describe your requirements in natural language, and our tool will automatically generate a PlantUML class diagram. 
@@ -13,7 +13,7 @@
         </div>
   
         <div class="feature">
-          <router-link to="/sequence-diagram-generator" class="title">AI-Powered Sequence Diagram Generator</router-link>
+          <h2 class="title">AI-Powered Sequence Diagram Generator</h2>
           <p class="description">
             Visualize your system interactions with ease using our AI-powered sequence diagram generator! 
             Describe the sequence of events in natural language, and our tool will automatically generate a PlantUML sequence diagram. 
@@ -24,7 +24,7 @@
   
       <div class="feature-section">
         <div class="feature">
-          <router-link to="/text-translator" class="title">AI-Powered Text Translator</router-link>
+          <h2 class="title">AI-Powered Text Translator</h2>
           <p class="description">
             Translate your text quickly and accurately with our AI-powered translator. 
             Leveraging the power of Google Gemini, our tool supports multiple languages and delivers high-quality translations. 
@@ -32,7 +32,7 @@
         </div>
   
         <div class="feature">
-          <router-link to="/word-translator" class="title">AI-Powered Word Document Translator</router-link>
+          <h2 class="title">AI-Powered Word Document Translator</h2>
           <p class="description">
             Translate your entire Word documents while preserving formatting with our AI-powered translator.
             Simply upload your document, choose the target language, and let our tool handle the rest. 
