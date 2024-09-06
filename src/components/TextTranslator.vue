@@ -78,11 +78,11 @@ export default {
 
           response.text().then(data => {
             translatedChunks[index] = { index: index, translatedText: data }; // Store translated chunk with index
-            console.log("chunk index: " + index + ", translated chunk: " + data);
 
             // Check if all chunks have been translated
             if (translatedChunks.length === textChunks.length) {
-              this.outputText = translatedChunks.sort((a, b) => a.index - b.index).map(chunk => chunk.translatedText).join(''); // Combine in order
+              let fullText = translatedChunks.sort((a, b) => a.index - b.index).map(chunk => chunk.translatedText).join(''); // Combine in order
+              this.outputText = fullText
               this.isDesigning = false;
             }
           });
@@ -96,9 +96,30 @@ export default {
 
     splitTextIntoChunks(text, chunkSize) {
       const chunks = [];
-      for (let i = 0; i < text.length; i += chunkSize) {
-        chunks.push(text.slice(i, i + chunkSize));
+      let currentChunk = '';
+      let currentParagraph = '';
+      const paragraphs = text.split('\n\n');
+
+      paragraphs.forEach(paragraph => {
+        currentParagraph = paragraph;
+
+        // If the current chunk plus the paragraph exceeds the chunk size
+        if (currentChunk.length + currentParagraph.length > chunkSize) {
+          // Add the current chunk to the list
+          chunks.push(currentChunk);
+          // Start a new chunk with the current paragraph
+          currentChunk = currentParagraph;
+        } else {
+          // Append the paragraph to the current chunk
+          currentChunk += currentParagraph + '\n\n';
+        }
+      });
+
+      // Add the final chunk if it's not empty
+      if (currentChunk) {
+        chunks.push(currentChunk);
       }
+
       return chunks;
     }
   }
