@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Home from '../components/Home.vue';
 import ObjectDiagramGenerator from '../components/ObjectDiagramGenerator.vue';
 import SequenceDiagramGenerator from '../components/SequenceDiagramGenerator.vue'; // 序列图生成组件 (待开发)
 import TextTranslator from '../components/TextTranslator.vue'; // 文本翻译组件 (待开发)
@@ -8,8 +9,8 @@ import DddBlog from '../components/DddBlog.vue'; // Word 文档翻译组件 (使
 const routes = [
   {
     path: '/',
-    name: 'object-diagram-generator',
-    component: ObjectDiagramGenerator,
+    name: 'home',
+    component: Home,
   },
   {
     path: '/object-diagram-generator',

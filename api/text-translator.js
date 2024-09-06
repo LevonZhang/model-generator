@@ -10,16 +10,13 @@ module.exports = async (req, res) => {
       const targetLanguage = req.body.targetLanguage || 'en'; // Get target language from request
       const textToTranslate = req.body.textToTranslate; // Get text to translate
   
-      const chunkSize = 3000; // Set the chunk size for translation
+      const chunkSize = 2000; // Set the chunk size for translation
   
       let translatedText = '';
   
       // Split text into chunks and translate each chunk
       for (let i = 0; i < textToTranslate.length; i += chunkSize) {
-        const chunk = textToTranslate.slice(i, i + chunkSize);
-
-        console.log(chunk);
-  
+        const chunk = textToTranslate.slice(i, i + chunkSize);  
         const sys_prompt = `Translate the following text into ${targetLanguage}, 
                             do not add any titles, only translate the text content, 
                             and directly return translated result, do NOT wrap the returned results in any marks!
