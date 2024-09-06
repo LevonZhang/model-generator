@@ -78,7 +78,9 @@ export default {
           }
 
           const data = await response.text(); // Get the raw text response
+          console.log(index+"部分data:"+data)
           translatedText += data;
+          console.log(index+"部分translatedText:"+translatedText)
 
           if (index === textChunks.length - 1) {
             // All chunks have been translated
