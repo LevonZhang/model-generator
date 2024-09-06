@@ -54,7 +54,7 @@ export default {
       this.isDesigning = true;
       this.errorMessage = null;
 
-      const chunkSize = 3000; // Define chunk size here
+      const chunkSize = 500; // Define chunk size here
       const textChunks = this.splitTextIntoChunks(this.inputText, chunkSize);
 
       let translatedText = '';
