@@ -11,8 +11,7 @@
         <div v-html="inputText" contenteditable="true" @input="onInputTextChange"></div> 
       </div>
       <div class="output-area">
-        <div class="language-selector">
-          <label for="target-language">Target Language:</label>
+        <!-- <div class="language-selector"> -->
           <select id="target-language" v-model="targetLanguage">
             <option value="en">English</option>
             <option value="fr">French</option>
@@ -22,7 +21,7 @@
             <option value="zh-CN">Chinese (Simplified)</option>
             <option value="zh-TW">Chinese (Traditional)</option>
           </select>
-        </div>
+        <!-- </div> -->
         <div v-html="outputText" contenteditable="false"></div>
       </div>
     </div>

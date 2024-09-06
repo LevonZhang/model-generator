@@ -25,8 +25,8 @@ module.exports = async (req, res) => {
   
         const sys_prompt = `Translate the following text into ${targetLanguage}, 
                             do not add any titles, only translate the text content, 
-                            keep all html tags and do not do any processing,
-                            and do not wrap the returned results in quotation marks: \n\n${chunk}`;
+                            and directly return translated result, do NOT wrap the returned results in any marks!
+                            keep all html tags and do not do any processing: \n${chunk}`;
   
         const schema = {
           description: "Objects containing translated text",
