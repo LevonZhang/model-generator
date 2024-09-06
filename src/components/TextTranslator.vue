@@ -5,26 +5,24 @@
       Translate your text quickly and accurately with our AI-powered translator. 
       Leveraging the power of Google Gemini, our tool supports multiple languages and delivers high-quality translations. 
     </p>
-    <div class="language-selector">
-      <label for="target-language">Target Language:</label>
-      <select id="target-language" v-model="targetLanguage">
-        <option value="en">English</option>
-        <option value="fr">French</option>
-        <option value="de">German</option>
-        <option value="es">Spanish</option>
-        <option value="ja">Japanese</option>
-        <option value="zh-CN">Chinese (Simplified)</option>
-        <option value="zh-TW">Chinese (Traditional)</option>
-      </select>
-    </div>
-
     <div class="translator">
       <div class="input-area">
         <label for="input-text">Text to Translate:</label>
         <div v-html="inputText" contenteditable="true" @input="onInputTextChange"></div> 
       </div>
       <div class="output-area">
-        <label for="output-text">Translated Text:</label>
+        <div class="language-selector">
+          <label for="target-language">Target Language:</label>
+          <select id="target-language" v-model="targetLanguage">
+            <option value="en">English</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="es">Spanish</option>
+            <option value="ja">Japanese</option>
+            <option value="zh-CN">Chinese (Simplified)</option>
+            <option value="zh-TW">Chinese (Traditional)</option>
+          </select>
+        </div>
         <div v-html="outputText" contenteditable="false"></div>
       </div>
     </div>
@@ -46,7 +44,7 @@ export default {
     return {
       inputText: '',
       outputText: '',
-      targetLanguage: 'en', // Default target language
+      targetLanguage: 'zh-CN', // Default target language
       isDesigning: false,
       errorMessage: null,
     };
