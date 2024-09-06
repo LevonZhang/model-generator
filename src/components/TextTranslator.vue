@@ -119,7 +119,6 @@ export default {
   margin: 0 10px;
   box-sizing: border-box;
   min-height: 400px; /* Adjust as needed */
-  overflow-y: auto; /* Add scrollbar if content exceeds height */
 }
 
 .language-selector {

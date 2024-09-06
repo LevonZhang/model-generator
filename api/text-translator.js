@@ -2,7 +2,7 @@
 
 module.exports = async (req, res) => {
     try {
-      const MODEL_NAME = "gemini-pro"; // Use Gemini Pro for better translation quality
+      const MODEL_NAME = "gemini-1.5-pro-latest";
       const { GoogleGenerativeAI, FunctionDeclarationSchemaType } = await import('@google/generative-ai');
   
       const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY); 
