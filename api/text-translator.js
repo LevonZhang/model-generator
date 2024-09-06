@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
 
         console.log(chunk);
   
-        const sys_prompt = `Translate the following text into ${targetLanguage}, preserving any formatting like paragraph breaks, line breaks, and lists, Do not translate HTML tags themselves: \n\n${chunk}`;
+        const sys_prompt = `Translate the following text into ${targetLanguage}, do not add any titles, only translate the text content, keep all html tags and do not do any processing: \n\n${chunk}`;
   
         const schema = {
           description: "Objects containing translated text",
