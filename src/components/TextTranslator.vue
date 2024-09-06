@@ -54,11 +54,9 @@ export default {
       this.isDesigning = true;
       this.errorMessage = null;
 
-      const chunkSize = 500; // Define chunk size here
+      const chunkSize = 800; // Define chunk size here
       const textChunks = this.splitTextIntoChunks(this.inputText, chunkSize);
       const translatedChunks = []; // Array to store translated chunks
-
-      let translatedText = '';
 
       // Translate each chunk sequentially
       textChunks.forEach(async (chunk, index) => {
@@ -79,7 +77,7 @@ export default {
           }
 
           response.text().then(data => {
-            translatedChunks[index] = data; // Store translated chunk with index
+            translatedChunks[index] = { index: index, translatedText: data }; // Store translated chunk with index
             console.log(""+index + "部分data:" + data);
 
             // Check if all chunks have been translated
