@@ -48,16 +48,18 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // 根据路由名称设置页面标题
   if (to.name === 'object-diagram-generator') {
-    document.title = 'Domain Model Object Diagram Generator - ModelWise';
+    document.title = 'PlantUML Domain Model Object Diagram Generator - ModelWise';
   } else if (to.name === 'sequence-diagram-generator') {
-    document.title = 'Domain Model Sequence Diagram Generator - ModelWise';
+    document.title = 'PlantUML Domain Model Sequence Diagram Generator - ModelWise';
   } else if (to.name === 'text-translator') {
-    document.title = 'AI powered text translate - ModelWise';
+    document.title = 'DeepL-Like AI powered text translate - ModelWise';
   } else if (to.name === 'word-translator') {
-    document.title = 'AI powered word document translate - ModelWise';
+    document.title = 'DeepL-Like AI powered word document translate - ModelWise';
   } else if (to.name === 'ddd-blog') {
     document.title = 'Domain Driven Design Blogs - ModelWise';
-  } 
+  } else {
+    document.title = 'AI-Powered Development Tools - ModelWise';
+  }
   next();
 });
 

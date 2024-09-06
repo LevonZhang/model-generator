@@ -4,44 +4,40 @@
   
       <div class="feature-section">
         <div class="feature">
-          <h2 class="title">AI-Powered Object Diagram Generator</h2>
+          <router-link to="/object-diagram-generator" class="title">AI-Powered Object Diagram Generator</router-link>
           <p class="description">
             Effortlessly design your Object Diagram domain models with our AI-powered generator! 
             Simply describe your requirements in natural language, and our tool will automatically generate a PlantUML class diagram. 
             You can even edit the generated code directly for further customization. Perfect for software developers and architects!
           </p>
-          <router-link to="/object-diagram-generator" class="button">Try It Out</router-link>
         </div>
   
         <div class="feature">
-          <h2 class="title">AI-Powered Sequence Diagram Generator</h2>
+          <router-link to="/sequence-diagram-generator" class="title">AI-Powered Sequence Diagram Generator</router-link>
           <p class="description">
             Visualize your system interactions with ease using our AI-powered sequence diagram generator! 
             Describe the sequence of events in natural language, and our tool will automatically generate a PlantUML sequence diagram. 
             Customize the generated code for even more precise representation of your system's behavior. 
           </p>
-          <router-link to="/sequence-diagram-generator" class="button">Try It Out</router-link>
         </div>
       </div>
   
       <div class="feature-section">
         <div class="feature">
-          <h2 class="title">AI-Powered Text Translator</h2>
+          <router-link to="/text-translator" class="title">AI-Powered Text Translator</router-link>
           <p class="description">
             Translate your text quickly and accurately with our AI-powered translator. 
             Leveraging the power of Google Gemini, our tool supports multiple languages and delivers high-quality translations. 
           </p>
-          <router-link to="/text-translator" class="button">Try It Out</router-link>
         </div>
   
         <div class="feature">
-          <h2 class="title">AI-Powered Word Document Translator</h2>
+          <router-link to="/word-translator" class="title">AI-Powered Word Document Translator</router-link>
           <p class="description">
             Translate your entire Word documents while preserving formatting with our AI-powered translator.
             Simply upload your document, choose the target language, and let our tool handle the rest. 
             Powered by Google Gemini for accurate and efficient document translation.
           </p>
-          <router-link to="/word-translator" class="button">Try It Out</router-link>
         </div>
       </div>
     </div>

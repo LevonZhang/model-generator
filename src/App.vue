@@ -4,6 +4,7 @@
       <div class="header-content">
         <img src="@/assets/logo.png" alt="ModelWise Logo" class="logo">
         <nav>
+          <router-link :to="{ name: 'home' }" class="active">Home</router-link>
           <router-link :to="{ name: 'object-diagram-generator' }" class="active">Object Diagram Generator</router-link>
           <router-link :to="{ name: 'sequence-diagram-generator' }">Sequence Diagram Generator</router-link>
           <router-link :to="{ name: 'text-translator' }">Text Translator</router-link>
