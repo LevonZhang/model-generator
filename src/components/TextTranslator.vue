@@ -48,38 +48,57 @@ export default {
       this.inputText = event.target.innerHTML;
     },
     translateText() {
-      if (this.inputText.trim() === '') { // Check if input is empty
-        return; // If empty, do nothing and return
+      if (this.inputText.trim() === '') {
+        return;
       }
-      this.isDesigning = true; // Show loading message
+      this.isDesigning = true;
       this.errorMessage = null;
-      fetch('/api/text-translator', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          textToTranslate: this.inputText,
-          targetLanguage: this.targetLanguage
-        })
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`API request failed with status ${response.status}`);
+
+      const chunkSize = 3000; // Define chunk size here
+      const textChunks = this.splitTextIntoChunks(this.inputText, chunkSize);
+
+      let translatedText = '';
+
+      // Translate each chunk sequentially
+      textChunks.forEach(async (chunk, index) => {
+        try {
+          const response = await fetch('/api/text-translator', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              textToTranslate: chunk,
+              targetLanguage: this.targetLanguage
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}`);
+          }
+
+          const data = await response.text(); // Get the raw text response
+          translatedText += data;
+
+          if (index === textChunks.length - 1) {
+            // All chunks have been translated
+            this.outputText = translatedText;
+            this.isDesigning = false;
+          }
+        } catch (error) {
+          console.error('Translation error:', error);
+          this.errorMessage = "Error during translate. Please check your input or network connection.";
+          this.isDesigning = false;
         }
-        return response.json(); 
-      })
-      .then(data => {
-        this.outputText = data.translatedText;
-      })
-      .catch(error => {
-        console.error('Translation error:', error);
-        this.errorMessage = "Error during translate. Please check your input or network connection.";
-        // Handle translation error (e.g., display an error message)
-      })
-      .finally(() => {
-        this.isDesigning = false; // Hide loading message
       });
+    },
+
+    splitTextIntoChunks(text, chunkSize) {
+      const chunks = [];
+      for (let i = 0; i < text.length; i += chunkSize) {
+        chunks.push(text.slice(i, i + chunkSize));
+      }
+      return chunks;
     }
   }
 };
