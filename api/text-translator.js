@@ -11,7 +11,6 @@ module.exports = async (req, res) => {
     const textToTranslate = req.body.textToTranslate; 
 
     const sys_prompt = `Translate the following text into ${targetLanguage}, 
-                          do not add any titles, only translate the text content, 
                           and directly return translated result, do NOT wrap the returned results in any marks!
                           keep all html tags and do not do any processing: \n${textToTranslate}`;
 
