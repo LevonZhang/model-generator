@@ -78,7 +78,7 @@ export default {
 
           response.text().then(data => {
             translatedChunks[index] = { index: index, translatedText: data }; // Store translated chunk with index
-            console.log(""+index + "部分data:" + data);
+            console.log("chunk index: " + index + ", translated chunk: " + data);
 
             // Check if all chunks have been translated
             if (translatedChunks.length === textChunks.length) {
