@@ -17,6 +17,8 @@ module.exports = async (req, res) => {
       // Split text into chunks and translate each chunk
       for (let i = 0; i < textToTranslate.length; i += chunkSize) {
         const chunk = textToTranslate.slice(i, i + chunkSize);
+
+        console.log(chunk);
   
         const sys_prompt = `Translate the following text into ${targetLanguage}, preserving any formatting like paragraph breaks, line breaks, and lists: \n\n${chunk}`;
   
@@ -55,7 +57,7 @@ module.exports = async (req, res) => {
         let text = result.response.text();
         translatedText += JSON.parse(text).translatedText; 
       }
-  
+      console.log(translatedText);
       res.status(200).json({ translatedText }); 
     } catch (error) {
       console.error("Error translating text:", error);
