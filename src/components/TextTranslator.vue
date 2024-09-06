@@ -81,8 +81,8 @@ export default {
 
             // Check if all chunks have been translated
             if (translatedChunks.length === textChunks.length) {
-              let fullText = translatedChunks.sort((a, b) => a.index - b.index).map(chunk => chunk.translatedText).join(''); // Combine in order
-              this.outputText = fullText
+              this.outputText = translatedChunks.sort((a, b) => a.index - b.index).map(chunk => chunk.translatedText).join(''); // Combine in order
+              // this.outputText = fullText
               this.isDesigning = false;
             }
           });
