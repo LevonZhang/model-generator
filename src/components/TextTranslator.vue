@@ -94,12 +94,65 @@ export default {
       });
     },
 
-    splitTextIntoChunks(text, chunkSize) {
-      const chunks = [];
-      for (let i = 0; i < text.length; i += chunkSize) {
-        chunks.push(text.slice(i, i + chunkSize));
+    splitTextIntoChunks(html, size ) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const fragments = [];
+      let currentFragment = '';
+      let currentSize = 0;
+
+      // 获取元素节点的属性
+      const getAttributes = (node) => {
+        const attrs = [];
+        for (let attr of node.attributes) {
+          attrs.push(`${attr.name}="${attr.value}"`);
+        }
+        return attrs.length > 0 ? ' ' + attrs.join(' ') : '';
+      };
+
+      // 递归遍历所有节点
+      const traverse = (node) => {
+        // 处理文本节点
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.nodeValue;
+          // 按照 size 进行分割，如果当前片段加上文本超过了 size，则创建新的片段
+          for (let i = 0; i < text.length; i++) {
+            if (currentSize + 1 >= size) { 
+              fragments.push(currentFragment);
+              currentFragment = '';
+              currentSize = 0;
+            }
+            currentFragment += text[i];
+            currentSize++;
+          }
+        }
+        // 处理元素节点
+        else if (node.nodeType === Node.ELEMENT_NODE) {
+          const tagName = node.tagName.toLowerCase();
+          currentFragment += `<${tagName}${getAttributes(node)}>`;
+          currentSize += tagName.length + 2; // 标签长度
+
+          // 遍历子节点
+          for (let child of node.childNodes) {
+            traverse(child);
+          }
+
+          currentFragment += `</${tagName}>`;
+          currentSize += tagName.length + 3; // 闭合标签长度
+        }
+      };
+
+      // 开始遍历 body 的子节点
+      for (let child of doc.body.childNodes) {
+        traverse(child);
       }
-      return chunks;
+
+      // 处理剩余的片段
+      if (currentFragment.length > 0) {
+        fragments.push(currentFragment);
+      }
+
+      return fragments;
     }
   }
 };
