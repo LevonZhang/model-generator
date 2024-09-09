@@ -43,8 +43,8 @@ module.exports = async (req, res) => {
       };  
 
       const generationConfig = {
-        response_mime_type:'application/json',
-        responseSchema: list[schema],
+        type: FunctionDeclarationSchemaType.ARRAY,
+        items: schema
       }
 
       const model = genAI.getGenerativeModel({
