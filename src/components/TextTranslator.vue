@@ -54,20 +54,23 @@ export default {
       this.isDesigning = true;
       this.errorMessage = null;
 
-      const chunkSize = 1000; // Define chunk size here
-      const textChunks = this.splitTextIntoChunks(this.inputText, chunkSize);
-      const translatedChunks = []; // Array to store translated chunks
+      const chunkSize = 800;
+      const textWithIndex = this.extractTextAndIndex(this.inputText); 
+      console.log(textWithIndex)
+      const textChunks = this.chunkText(textWithIndex, chunkSize);
+      onsole.log(textChunks)
+      const translatedChunks = [];
 
-      // Translate each chunk sequentially
       textChunks.forEach(async (chunk, index) => {
         try {
+          const textToTranslate = chunk.map(item => item.text).join(''); 
           const response = await fetch('/api/text-translator', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              textToTranslate: chunk,
+              textToTranslate,
               targetLanguage: this.targetLanguage
             })
           });
@@ -77,12 +80,23 @@ export default {
           }
 
           response.text().then(data => {
-            translatedChunks[index] = { index: index, translatedText: data }; // Store translated chunk with index
+            // Check if the chunk has a sub-index
+            if (index.includes('-')) {
+              // Chunk has a sub-index, so update the translatedChunks array
+              const [originalIndex, subIndex] = index.split('-');
+              if (!translatedChunks[originalIndex]) {
+                translatedChunks[originalIndex] = []; // Initialize the array for this index if it doesn't exist
+              }
+              translatedChunks[originalIndex][subIndex] = data; // Store the translated text at the sub-index
+            } else {
+              // Chunk does not have a sub-index, so directly store the translated text
+              translatedChunks[index] = data;
+            }
 
             // Check if all chunks have been translated
             if (translatedChunks.length === textChunks.length) {
-              let fullText = translatedChunks.sort((a, b) => a.index - b.index).map(chunk => chunk.translatedText).join(''); // Combine in order
-              this.outputText = fullText
+              const translatedHTML = this.buildTranslatedHTML(translatedChunks, textWithIndex);
+              this.outputText = translatedHTML;
               this.isDesigning = false;
             }
           });
@@ -94,46 +108,136 @@ export default {
       });
     },
 
-    splitTextIntoChunks(htmlString, maxChunkSize ) {
-      const chunks = [];
-      let currentChunk = "";
-      let tagStack = []; 
+    // Function to extract text and create an index
+    extractTextAndIndex(html) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const textWithIndex = [];
+      let currentIndex = 0;
 
-      const isTagStart = (char) => char === "<";
-      const isTagEnd = (char) => char === ">";
-      const isSentenceEnd = (char) => /[.!?;]/.test(char); // 判断是否是句子结束符号
+      function traverse(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.nodeValue.trim(); // Trim whitespace
+          if (text) {
+            textWithIndex.push({ index: currentIndex, text: text });
+            currentIndex++;
+          }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          textWithIndex.push({ index: currentIndex, text: `<${node.tagName.toLowerCase()}${getAttributes(node)}>` });
+          currentIndex++;
 
-      for (let i = 0; i < htmlString.length; i++) {
-        const char = htmlString[i];
+          for (let child of node.childNodes) {
+            traverse(child);
+          }
 
-        currentChunk += char;
-
-        if (isTagStart(char)) {
-          tagStack.push(char); 
-        } else if (isTagEnd(char)) {
-          tagStack.pop();
-        }
-
-        // 检查是否可以拆分，需要在句子结束后
-        if (
-          currentChunk.length >= maxChunkSize &&
-          tagStack.length === 0 && 
-          !isTagStart(htmlString[i + 1]) &&
-          isSentenceEnd(htmlString[i]) // 确保在句子结束符号处拆分
-        ) {
-          chunks.push(currentChunk);
-          currentChunk = "";
+          textWithIndex.push({ index: currentIndex, text: `</${node.tagName.toLowerCase()}>` });
+          currentIndex++;
         }
       }
 
-      // 处理剩余内容
+      function getAttributes(node) {
+        const attrs = [];
+        for (let attr of node.attributes) {
+          attrs.push(`${attr.name}="${attr.value}"`);
+        }
+        return attrs.length > 0 ? ' ' + attrs.join(' ') : '';
+      }
+
+      for (let child of doc.body.childNodes) {
+        traverse(child);
+      }
+
+      return textWithIndex;
+    },
+
+    // Function to chunk the extracted text
+    chunkText(textWithIndex, chunkSize = 800) {
+      const chunks = [];
+      let currentChunk = [];
+      let currentChunkSize = 0;
+
+      textWithIndex.forEach((item, index) => {
+        if (item.text.length > chunkSize) {
+          // Split the item into sub-chunks
+          const subChunks = this.splitItemIntoChunks(item, chunkSize);
+          subChunks.forEach((subChunk, subIndex) => {
+            // Create a new sub-item with the original index and sub-index
+            const subItem = {
+              index: `${index}-${subIndex}`, // Create a combined index
+              text: subChunk
+            };
+            currentChunk.push(subItem);
+            currentChunkSize += subChunk.length;
+
+            if (currentChunkSize >= chunkSize) {
+              chunks.push(currentChunk);
+              currentChunk = [];
+              currentChunkSize = 0;
+            }
+          });
+        } else {
+          // Add the item to the current chunk
+          currentChunk.push(item);
+          currentChunkSize += item.text.length;
+
+          if (currentChunkSize >= chunkSize) {
+            chunks.push(currentChunk);
+            currentChunk = [];
+            currentChunkSize = 0;
+          }
+        }
+      });
+
       if (currentChunk.length > 0) {
         chunks.push(currentChunk);
       }
 
-      console.log(chunks);
-
       return chunks;
+    },
+
+    // Helper function to split an item into chunks
+    splitItemIntoChunks(item, chunkSize) {
+      const subChunks = [];
+      let currentChunk = '';
+      let currentChunkSize = 0;
+
+      for (let i = 0; i < item.text.length; i++) {
+        if (currentChunkSize + 1 >= chunkSize) {
+          subChunks.push(currentChunk);
+          currentChunk = '';
+          currentChunkSize = 0;
+        }
+        currentChunk += item.text[i];
+        currentChunkSize++;
+      }
+
+      if (currentChunkSize > 0) {
+        subChunks.push(currentChunk);
+      }
+
+      return subChunks;
+    },
+
+    buildTranslatedHTML(translatedChunks, originalTextWithIndex) {
+      let translatedHTML = '';
+      translatedChunks.forEach((chunk, index) => {
+        // Handle cases with sub-indices
+        if (Array.isArray(chunk)) {
+          chunk.sort((a, b) => a.index - b.index).forEach((subChunk) => {
+            const originalItem = originalTextWithIndex.find(item => item.index === subChunk.index);
+            if (originalItem) {
+              translatedHTML += subChunk.translatedText;
+            }
+          });
+        } else {
+          // Handle cases without sub-indices
+          const originalItem = originalTextWithIndex.find(item => item.index === index);
+          if (originalItem) {
+            translatedHTML += chunk;
+          }
+        }
+      });
+      return translatedHTML;
     }
   }
 };
