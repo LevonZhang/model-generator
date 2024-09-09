@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
                           
         const schema = {
           description: "Objects containing translated text",
-          type: FunctionDeclarationSchemaType.OBJECT,
+          type: FunctionDeclarationSchemaType.ARRAY,
           properties: {
             index: {
               type: FunctionDeclarationSchemaType.STRING,
