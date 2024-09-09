@@ -10,14 +10,13 @@ module.exports = async (req, res) => {
     const targetLanguage = req.body.targetLanguage || 'en'; 
     const textToTranslate = req.body.textToTranslate; 
 
-    const sys_prompt = `Translate the following text into ${targetLanguage}, 
-                          and directly return translated result, do NOT wrap the returned results in any marks!
+    const sys_prompt = `Translate the following text into ${targetLanguage}.
                           
                           **Formatting instructions:**
                           - Do not add any extra line breaks, markdown formatting, numbering, or any other special formatting. 
                           - Please preserving all original formatting, including spaces, line breaks, and special characters such as tabs.
                           - Directly return a JSON array without any additional formatting. 
-                          - The returned JSON array must strictly adhere to the following JSON format, each object in array must include index, translation.  It is absolutely forbidden to return only the translated text directly.
+                          - The returned JSON array must strictly adhere to the following JSON format, each object in array must include index, translatedText.  It is absolutely forbidden to return only the translated text directly.
                           - Make sure the output is a complete and valid JSON array.
                           
                           Only return the result in the following JSON format,replace translation value with the translated text :
@@ -26,26 +25,28 @@ module.exports = async (req, res) => {
                             {"index": "1-1", "translatedText": "Translated text 1-1"}
                           ]
                             
-                          Please translate the following texts:
+                          Please translate the following texts, replace input text with translated text in each line:
                           ${textToTranslate}
                           `;
 
-      const schema = {
-        description: "Objects containing translated text",
-        type: FunctionDeclarationSchemaType.OBJECT,
-        properties: {
-          index: {
-            type: FunctionDeclarationSchemaType.STRING,
-            description: "index",
-            nullable: false,
+        console.log(sys_prompt)
+                          
+        const schema = {
+          description: "Objects containing translated text",
+          type: FunctionDeclarationSchemaType.OBJECT,
+          properties: {
+            index: {
+              type: FunctionDeclarationSchemaType.STRING,
+              description: "index",
+              nullable: false,
+            },
+            translatedText: {
+              type: FunctionDeclarationSchemaType.STRING,
+              description: "Translated text",
+              nullable: false,
+            },
           },
-          translatedText: {
-            type: FunctionDeclarationSchemaType.STRING,
-            description: "Translated text",
-            nullable: false,
-          },
-        },
-        required: ["translatedText"],
+          required: ["translatedText"],
       };  
 
       const generationConfig = {
