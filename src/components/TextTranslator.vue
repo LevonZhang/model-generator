@@ -194,9 +194,19 @@ export default {
 
       function traverse(node) {
         if (node.nodeType === Node.TEXT_NODE) {
-          const text = node.nodeValue.trim(); 
-          if (text && !/^[0-9.,]+$/.test(text)) { // 检查文本是否包含非数字、逗号和句点的字符
-            textWithIndex.push({ index: currentIndex, text: text });
+          const text = node.nodeValue.trim(); // 去除空格
+          // 检查文本是否完全由数字、逗号和句点组成
+          if (text && /^[0-9.,]+$/.test(text)) { 
+            // 将 HTML 标签存储到 htmlTags 数组中
+            htmlTags.push({
+              index: currentIndex,
+              text: text // 直接添加数字内容到 htmlTags
+            });
+            currentIndex++;
+          } else {
+            // 对文本进行转义处理
+            const escapedText = text.replace(/\n/g, '\\n'); // 将回车符转换为 \n
+            textWithIndex.push({ index: currentIndex, text: escapedText });
             currentIndex++;
           }
         } else if (node.nodeType === Node.ELEMENT_NODE) {
