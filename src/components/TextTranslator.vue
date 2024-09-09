@@ -205,9 +205,11 @@ export default {
             currentIndex++;
           } else {
             // 对文本进行转义处理
-            const escapedText = text.replace(/\n/g, '\\n'); // 将回车符转换为 \n
-            textWithIndex.push({ index: currentIndex, text: escapedText });
-            currentIndex++;
+            const escapedText = text.replace(/\n/g, '\\n').trim(); // 将回车符转换为 \n
+            if (escapedText!==""){
+              textWithIndex.push({ index: currentIndex, text: escapedText });
+              currentIndex++;
+            }
           }
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           // 将 HTML 标签存储到 htmlTags 数组中
