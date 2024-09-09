@@ -18,6 +18,7 @@ module.exports = async (req, res) => {
                           - Directly return a JSON array without any additional formatting. 
                           - The returned JSON array must strictly adhere to the following JSON format, each object in array must include index, translatedText.  It is absolutely forbidden to return only the translated text directly.
                           - Make sure the output is a complete and valid JSON array.
+                          - Translate each line of the input text separately and return the translated text in a JSON array.
                           
                           Only return the result in the following JSON format,replace translation value with the translated text :
                           [
