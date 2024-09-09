@@ -24,6 +24,7 @@ module.exports = async (req, res) => {
                           - The returned JSON array must strictly adhere to the following JSON format, each object in array must include index, translation.  It is absolutely forbidden to return only the translated text directly.
                           - Make sure the output is a complete and valid JSON array.
                           - The index in the output must match the index in the input text.
+                          - The translated text in the "translatedText" field should only contain the translated text without the original index and comma.
 
                           Only return the result in the following JSON format,replace translation value with the translated text :
                           [
