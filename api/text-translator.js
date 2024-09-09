@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
     const targetLanguage = req.body.targetLanguage || 'en'; 
     const textToTranslate = req.body.textToTranslate; 
 
-    const sys_prompt = `Translate the following text into ${targetLanguage}.
+    const sys_prompt = `Translate given json array object into ${targetLanguage}.
                           
                           **Formatting instructions:**
                           - Do not add any extra line breaks, markdown formatting, numbering, or any other special formatting. 
@@ -18,9 +18,9 @@ module.exports = async (req, res) => {
                           - Directly return a JSON array without any additional formatting. 
                           - The returned JSON array must strictly adhere to the following JSON format, each object in array must include index, translatedText.  It is absolutely forbidden to return only the translated text directly.
                           - Make sure the output is a complete and valid JSON array.
-                          - Translate ALL line of the input text , do NOT only return first line!
+                          - Translate ALL object of the json array , do NOT only return first object!
                             
-                          Please translate the following texts, for each object of user input texts, replace translatedText with translated text:
+                          Please translate the following json array object, for each object in this array, translate and replace translatedText attribute with the translated text,and return the whole updated json Array:
                           ${textToTranslate}
                           `;
                           

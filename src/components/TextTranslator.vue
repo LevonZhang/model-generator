@@ -142,7 +142,7 @@ export default {
     async translateApiChunk(chunk, translatedChunks) {
       try {
         // 拼接块中的文本内容，并用索引编号区分
-        const textToTranslate = chunk.map(item => `{"index": "${item.index}", "translatedText": "${item.text}"}`).join('\n');
+        const textToTranslate = JSON.stringify(chunk.map(item => ({ index: item.index, translatedText: item.text })));
         console.log(textToTranslate)
         const response = await fetch('/api/text-translator', {
           method: 'POST',
