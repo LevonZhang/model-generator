@@ -48,67 +48,140 @@ export default {
       this.inputText = event.target.innerHTML;
     },
     translateText() {
-      if (this.inputText.trim() === '') { // Check if input is empty
-        return; // If empty, do nothing and return
+      if (this.inputText.trim() === '') {
+        return;
       }
-      this.isDesigning = true; // Show loading message
+      this.isDesigning = true;
       this.errorMessage = null;
 
-      const chunkSize = 800;
-      const { textWithIndex, htmlTags } = this.extractTextAndIndex(this.inputText); 
-      const textChunks = this.chunkText(textWithIndex,chunkSize); 
-
+      const { textWithIndex, htmlTags } = this.extractTextAndIndex(this.inputText);
       const translatedChunks = [];
+      const apiChunkSize = 4000; // API 的字数限制
 
-      textChunks.forEach(async (chunk, index) => {
-        try {
-          const textToTranslate = chunk.map(item => item.text).join(''); 
-          const response = await fetch('/api/text-translator', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              textToTranslate,
-              targetLanguage: this.targetLanguage
-            })
+      // 将文本块分成多个符合 API 字数限制的请求
+      let currentApiChunk = [];
+      let currentApiChunkSize = 0;
+      let currentChunkIndex = 0; // 当前块的索引
+
+      // 直接使用 textWithIndex 来进行处理
+      textWithIndex.forEach((item, index) => {
+        // 如果当前项的大小超过限制，则单独进行处理
+        if (item.text.length >= apiChunkSize) {
+          // 将当前项拆分成多个子项
+          const subItems = this.splitItemIntoChunks(item, apiChunkSize);
+          subItems.forEach((subItem, subIndex) => {
+            // 将子项添加到当前 API 块中
+            currentApiChunk.push({
+              index: `${index}-${subIndex}`, // 添加子索引
+              text: subItem
+            });
+            currentApiChunkSize += subItem.length;
+
+            // 如果当前 API 块的大小超过限制，则发送请求
+            if (currentApiChunkSize >= apiChunkSize) {
+              this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => {
+                // 检查是否所有块都已翻译
+                if (translatedChunks.length === textWithIndex.length) {
+                  const translatedHTML = this.buildTranslatedHTML(
+                    translatedChunks,
+                    htmlTags
+                  );
+                  this.outputText = translatedHTML;
+                  this.isDesigning = false;
+                }
+              });
+              // 重置当前 API 块
+              currentApiChunk = [];
+              currentApiChunkSize = 0;
+              currentChunkIndex++; // 更新当前块的索引
+            }
           });
+        } else {
+          // 将 item 添加到当前 API 块中
+          currentApiChunk.push(item);
+          currentApiChunkSize += item.text.length;
 
-          if (!response.ok) {
-            throw new Error(`API request failed with status ${response.status}`);
-          }
-
-          response.text().then(data => {
-            // Check if the chunk has a sub-index
-            if (index.includes('-')) {
-              // Chunk has a sub-index, so update the translatedChunks array
-              const [originalIndex, subIndex] = index.split('-');
-              if (!translatedChunks[originalIndex]) {
-                translatedChunks[originalIndex] = []; // Initialize the array for this index if it doesn't exist
+          // 如果当前 API 块的大小超过限制，则发送请求
+          if (currentApiChunkSize >= apiChunkSize) {
+            this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => {
+              // 检查是否所有块都已翻译
+              if (translatedChunks.length === textWithIndex.length) {
+                const translatedHTML = this.buildTranslatedHTML(
+                  translatedChunks,
+                  htmlTags
+                );
+                this.outputText = translatedHTML;
+                this.isDesigning = false;
               }
-              translatedChunks[originalIndex][subIndex] = data; // Store the translated text at the sub-index
-            } else {
-              // Chunk does not have a sub-index, so directly store the translated text
-              translatedChunks[index] = data;
-            }
-
-            // Check if all chunks have been translated
-            if (translatedChunks.length === textChunks.length) {
-              const translatedHTML = this.buildTranslatedHTML(
-                translatedChunks,
-                textWithIndex,
-                htmlTags
-              );
-              this.outputText = translatedHTML;
-              this.isDesigning = false;
-            }
-          });
-        } catch (error) {
-          console.error('Translation error:', error);
-          this.errorMessage = "Error during translate. Please check your input or network connection.";
-          this.isDesigning = false;
+            });
+            // 重置当前 API 块
+            currentApiChunk = [];
+            currentApiChunkSize = 0;
+            currentChunkIndex++; // 更新当前块的索引
+          }
         }
       });
+
+      // 如果最后一块没有超过限制，则发送请求
+      if (currentApiChunk.length > 0) {
+        this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => {
+          // 检查是否所有块都已翻译
+          if (translatedChunks.length === textWithIndex.length) {
+            const translatedHTML = this.buildTranslatedHTML(
+              translatedChunks,
+              htmlTags
+            );
+            this.outputText = translatedHTML;
+            this.isDesigning = false;
+          }
+        });
+      }
+    },
+
+    // 翻译单个 API 块
+    async translateApiChunk(chunk, translatedChunks) {
+      try {
+        // 拼接块中的文本内容，并用索引编号区分
+        const textToTranslate = chunk.map(item => `${item.index}, ${item.text}`).join('\n');
+        console.log(textToTranslate)
+        const response = await fetch('/api/text-translator', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            textToTranslate,
+            targetLanguage: this.targetLanguage
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // 处理翻译结果
+        data.forEach(item => {
+          // 将翻译后的文本存储到 translatedChunks 中
+          const [index, subIndex] = item.index.split('-');
+          if (subIndex) {
+            // 如果有子索引，则合并翻译结果
+            if (!translatedChunks[index]) {
+              translatedChunks[index] = ''; // 初始化为空字符串
+            }
+            // 将翻译结果追加到对应索引的字符串中
+            translatedChunks[index] += item.translatedText;
+          } else {
+            // 如果没有子索引，则直接存储翻译结果
+            translatedChunks[index] = item.translatedText;
+          }
+        });
+
+      } catch (error) {
+        console.error('Translation error:', error);
+        this.errorMessage = "Error during translate. Please check your input or network connection.";
+      }
     },
 
     // Function to extract text and create an index
@@ -121,8 +194,8 @@ export default {
 
       function traverse(node) {
         if (node.nodeType === Node.TEXT_NODE) {
-          const text = node.nodeValue.trim(); // Trim whitespace
-          if (text) {
+          const text = node.nodeValue.trim(); 
+          if (text && !/^[0-9.,]+$/.test(text)) { // 检查文本是否包含非数字、逗号和句点的字符
             textWithIndex.push({ index: currentIndex, text: text });
             currentIndex++;
           }
@@ -161,51 +234,6 @@ export default {
       return { textWithIndex, htmlTags }; // 返回两个数组
     },
 
-    // Function to chunk the extracted text
-    chunkText(textWithIndex, chunkSize) {
-      const chunks = [];
-      let currentChunk = [];
-      let currentChunkSize = 0;
-
-      textWithIndex.forEach((item, index) => {
-        if (item.text.length > chunkSize) {
-          // Split the item into sub-chunks
-          const subChunks = this.splitItemIntoChunks(item, chunkSize);
-          subChunks.forEach((subChunk, subIndex) => {
-            // Create a new sub-item with the original index and sub-index
-            const subItem = {
-              index: `${index}-${subIndex}`, // Create a combined index
-              text: subChunk
-            };
-            currentChunk.push(subItem);
-            currentChunkSize += subChunk.length;
-
-            if (currentChunkSize >= chunkSize) {
-              chunks.push(currentChunk);
-              currentChunk = [];
-              currentChunkSize = 0;
-            }
-          });
-        } else {
-          // Add the item to the current chunk
-          currentChunk.push(item);
-          currentChunkSize += item.text.length;
-
-          if (currentChunkSize >= chunkSize) {
-            chunks.push(currentChunk);
-            currentChunk = [];
-            currentChunkSize = 0;
-          }
-        }
-      });
-
-      if (currentChunk.length > 0) {
-        chunks.push(currentChunk);
-      }
-
-      return chunks;
-    },
-
     // Helper function to split an item into chunks
     splitItemIntoChunks(item, chunkSize) {
       const subChunks = [];
@@ -229,29 +257,17 @@ export default {
       return subChunks;
     },
 
-    buildTranslatedHTML(translatedChunks, originalTextWithIndex, htmlTags) {
+    buildTranslatedHTML(translatedChunks, htmlTags) {
       let translatedHTML = '';
       let currentIndex = 0;
-      // Sort translatedChunks based on index
-      translatedChunks.sort((a, b) => a.index - b.index);
-
-      // Iterate through all the HTML tags and insert the translated text
-      htmlTags.forEach(tagItem => {
-        // Check if the current index matches the tag's index
-        if (tagItem.index === currentIndex) {
-          translatedHTML += tagItem.text;
+      translatedChunks.sort((a, b) => a.index - b.index).forEach((translatedChunk) => {
+        if (htmlTags[currentIndex]) {
+          translatedHTML += htmlTags[currentIndex].text;
           currentIndex++;
         }
-
-        // If the current index matches the translated text's index, insert the translated text
-        if (translatedChunks[currentIndex]) {
-          if (Array.isArray(translatedChunks[currentIndex])) {
-            // If the chunk has sub-indices, combine them
-            translatedHTML += translatedChunks[currentIndex].map(chunk => chunk.translatedText).join('');
-          } else {
-            // If the chunk does not have sub-indices, add the translated text
-            translatedHTML += translatedChunks[currentIndex];
-          }
+        if (translatedChunk) {
+          // 直接使用翻译后的文本内容
+          translatedHTML += translatedChunk;
           currentIndex++;
         }
       });

@@ -18,6 +18,11 @@ module.exports = async (req, res) => {
         description: "Objects containing translated text",
         type: FunctionDeclarationSchemaType.OBJECT,
         properties: {
+          index: {
+            type: FunctionDeclarationSchemaType.STRING,
+            description: "index",
+            nullable: false,
+          },
           translatedText: {
             type: FunctionDeclarationSchemaType.STRING,
             description: "Translated text",
@@ -47,8 +52,7 @@ module.exports = async (req, res) => {
         return { error: `Blocked for ${result.response.promptFeedback.blockReason}` };
       }
       let text = result.response.text();
-      translatedText = JSON.parse(text).translatedText; 
-      res.status(200).send(translatedText); 
+      res.status(200).json(JSON.parse(text));
   } catch (error) {
     console.error("Error translating text:", error);
     res.status(500).send("Error translating text");
