@@ -19,18 +19,10 @@ module.exports = async (req, res) => {
                           - The returned JSON array must strictly adhere to the following JSON format, each object in array must include index, translatedText.  It is absolutely forbidden to return only the translated text directly.
                           - Make sure the output is a complete and valid JSON array.
                           - Translate ALL line of the input text , do NOT only return first line!
-                          
-                          Only return the result in the following JSON format, replace translation value with the translated text :
-                          [
-                            {"index": "0", "translatedText": "Translated text 1"},
-                            {"index": "1-1", "translatedText": "Translated text 1-1"}
-                          ]
                             
-                          Please translate the following texts, replace input text with translated text in each line:
+                          Please translate the following texts, for each object of user input texts, replace translatedText with translated text:
                           ${textToTranslate}
                           `;
-
-        console.log(sys_prompt)
                           
         const schema = {
           description: "Objects containing translated text",
