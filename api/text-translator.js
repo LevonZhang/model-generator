@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
                         - Return a JSON array without any additional formatting.
                         - Ensure that each object in the array includes the original "index" and the "translatedText" attribute, where the "translatedText" is replaced by the translated text.
                         - **Translate ALL objects in the JSON array, and do NOT only return the first object.** 
-                        - Make sure the output is a complete and valid JSON array, and each object is processed from start to finish.
+                        - Note: Make sure the output is a complete and valid JSON ARRAY, not a simple JSON Object! and each object is processed from start to finish.
 
                         Only return the result in the following JSON format, replace translatedText value with the translated text :
                         [
@@ -26,9 +26,8 @@ module.exports = async (req, res) => {
                           {"index": "1", "translatedText": "Translated text 2"}
                         ]
                         
-                        Please translate the following JSON array of objects, replacing the "translatedText" in each object with the translated version, and return the entire updated JSON array:
+                        Please translate the following JSON ARRAY of objects, replacing the "translatedText" in each object with the translated version, and return the entire updated JSON ARRAY:
                         ${textToTranslate}`;
-    
                           
         const schema = {
           description: "Objects containing translated text",
