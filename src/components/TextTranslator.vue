@@ -54,7 +54,7 @@ export default {
       this.isDesigning = true;
       this.errorMessage = null;
 
-      const chunkSize = 800; // Define chunk size here
+      const chunkSize = 1000; // Define chunk size here
       const textChunks = this.splitTextIntoChunks(this.inputText, chunkSize);
       const translatedChunks = []; // Array to store translated chunks
 
@@ -94,65 +94,46 @@ export default {
       });
     },
 
-    splitTextIntoChunks(html, size ) {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-      const fragments = [];
-      let currentFragment = '';
-      let currentSize = 0;
+    splitTextIntoChunks(htmlString, maxChunkSize ) {
+      const chunks = [];
+      let currentChunk = "";
+      let tagStack = []; 
 
-      // 获取元素节点的属性
-      const getAttributes = (node) => {
-        const attrs = [];
-        for (let attr of node.attributes) {
-          attrs.push(`${attr.name}="${attr.value}"`);
+      const isTagStart = (char) => char === "<";
+      const isTagEnd = (char) => char === ">";
+      const isSentenceEnd = (char) => /[.!?;]/.test(char); // 判断是否是句子结束符号
+
+      for (let i = 0; i < htmlString.length; i++) {
+        const char = htmlString[i];
+
+        currentChunk += char;
+
+        if (isTagStart(char)) {
+          tagStack.push(char); 
+        } else if (isTagEnd(char)) {
+          tagStack.pop();
         }
-        return attrs.length > 0 ? ' ' + attrs.join(' ') : '';
-      };
 
-      // 递归遍历所有节点
-      const traverse = (node) => {
-        // 处理文本节点
-        if (node.nodeType === Node.TEXT_NODE) {
-          const text = node.nodeValue;
-          // 按照 size 进行分割，如果当前片段加上文本超过了 size，则创建新的片段
-          for (let i = 0; i < text.length; i++) {
-            if (currentSize + 1 >= size) { 
-              fragments.push(currentFragment);
-              currentFragment = '';
-              currentSize = 0;
-            }
-            currentFragment += text[i];
-            currentSize++;
-          }
+        // 检查是否可以拆分，需要在句子结束后
+        if (
+          currentChunk.length >= maxChunkSize &&
+          tagStack.length === 0 && 
+          !isTagStart(htmlString[i + 1]) &&
+          isSentenceEnd(htmlString[i]) // 确保在句子结束符号处拆分
+        ) {
+          chunks.push(currentChunk);
+          currentChunk = "";
         }
-        // 处理元素节点
-        else if (node.nodeType === Node.ELEMENT_NODE) {
-          const tagName = node.tagName.toLowerCase();
-          currentFragment += `<${tagName}${getAttributes(node)}>`;
-          currentSize += tagName.length + 2; // 标签长度
-
-          // 遍历子节点
-          for (let child of node.childNodes) {
-            traverse(child);
-          }
-
-          currentFragment += `</${tagName}>`;
-          currentSize += tagName.length + 3; // 闭合标签长度
-        }
-      };
-
-      // 开始遍历 body 的子节点
-      for (let child of doc.body.childNodes) {
-        traverse(child);
       }
 
-      // 处理剩余的片段
-      if (currentFragment.length > 0) {
-        fragments.push(currentFragment);
+      // 处理剩余内容
+      if (currentChunk.length > 0) {
+        chunks.push(currentChunk);
       }
 
-      return fragments;
+      console.log(chunks);
+
+      return chunks;
     }
   }
 };
