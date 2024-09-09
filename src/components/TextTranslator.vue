@@ -48,17 +48,16 @@ export default {
       this.inputText = event.target.innerHTML;
     },
     translateText() {
-      if (this.inputText.trim() === '') {
-        return;
+      if (this.inputText.trim() === '') { // Check if input is empty
+        return; // If empty, do nothing and return
       }
-      this.isDesigning = true;
+      this.isDesigning = true; // Show loading message
       this.errorMessage = null;
 
       const chunkSize = 800;
-      const textWithIndex = this.extractTextAndIndex(this.inputText); 
-      console.log(textWithIndex)
-      const textChunks = this.chunkText(textWithIndex, chunkSize);
-      onsole.log(textChunks)
+      const { textWithIndex, htmlTags } = this.extractTextAndIndex(this.inputText); 
+      const textChunks = this.chunkText(textWithIndex,chunkSize); 
+
       const translatedChunks = [];
 
       textChunks.forEach(async (chunk, index) => {
@@ -95,7 +94,11 @@ export default {
 
             // Check if all chunks have been translated
             if (translatedChunks.length === textChunks.length) {
-              const translatedHTML = this.buildTranslatedHTML(translatedChunks, textWithIndex);
+              const translatedHTML = this.buildTranslatedHTML(
+                translatedChunks,
+                textWithIndex,
+                htmlTags
+              );
               this.outputText = translatedHTML;
               this.isDesigning = false;
             }
@@ -112,7 +115,8 @@ export default {
     extractTextAndIndex(html) {
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
-      const textWithIndex = [];
+      const textWithIndex = []; // 存储需要翻译的文本和索引
+      const htmlTags = []; // 存储 HTML 标签和索引
       let currentIndex = 0;
 
       function traverse(node) {
@@ -123,15 +127,22 @@ export default {
             currentIndex++;
           }
         } else if (node.nodeType === Node.ELEMENT_NODE) {
-          textWithIndex.push({ index: currentIndex, text: `<${node.tagName.toLowerCase()}${getAttributes(node)}>` });
+          // 将 HTML 标签存储到 htmlTags 数组中
+          htmlTags.push({
+            index: currentIndex,
+            text: `<${node.tagName.toLowerCase()}${getAttributes(node)}>`
+          });
           currentIndex++;
 
-          for (let child of node.childNodes) {
-            traverse(child);
-          }
+          htmlTags.push({
+            index: currentIndex,
+            text: `</${node.tagName.toLowerCase()}>` 
+          });
+          // currentIndex++;  // Don't increment currentIndex for closing tags
+        }
 
-          textWithIndex.push({ index: currentIndex, text: `</${node.tagName.toLowerCase()}>` });
-          currentIndex++;
+        for (let child of node.childNodes) {
+          traverse(child);
         }
       }
 
@@ -147,11 +158,11 @@ export default {
         traverse(child);
       }
 
-      return textWithIndex;
+      return { textWithIndex, htmlTags }; // 返回两个数组
     },
 
     // Function to chunk the extracted text
-    chunkText(textWithIndex, chunkSize = 800) {
+    chunkText(textWithIndex, chunkSize) {
       const chunks = [];
       let currentChunk = [];
       let currentChunkSize = 0;
@@ -218,25 +229,33 @@ export default {
       return subChunks;
     },
 
-    buildTranslatedHTML(translatedChunks, originalTextWithIndex) {
+    buildTranslatedHTML(translatedChunks, originalTextWithIndex, htmlTags) {
       let translatedHTML = '';
-      translatedChunks.forEach((chunk, index) => {
-        // Handle cases with sub-indices
-        if (Array.isArray(chunk)) {
-          chunk.sort((a, b) => a.index - b.index).forEach((subChunk) => {
-            const originalItem = originalTextWithIndex.find(item => item.index === subChunk.index);
-            if (originalItem) {
-              translatedHTML += subChunk.translatedText;
-            }
-          });
-        } else {
-          // Handle cases without sub-indices
-          const originalItem = originalTextWithIndex.find(item => item.index === index);
-          if (originalItem) {
-            translatedHTML += chunk;
+      let currentIndex = 0;
+      // Sort translatedChunks based on index
+      translatedChunks.sort((a, b) => a.index - b.index);
+
+      // Iterate through all the HTML tags and insert the translated text
+      htmlTags.forEach(tagItem => {
+        // Check if the current index matches the tag's index
+        if (tagItem.index === currentIndex) {
+          translatedHTML += tagItem.text;
+          currentIndex++;
+        }
+
+        // If the current index matches the translated text's index, insert the translated text
+        if (translatedChunks[currentIndex]) {
+          if (Array.isArray(translatedChunks[currentIndex])) {
+            // If the chunk has sub-indices, combine them
+            translatedHTML += translatedChunks[currentIndex].map(chunk => chunk.translatedText).join('');
+          } else {
+            // If the chunk does not have sub-indices, add the translated text
+            translatedHTML += translatedChunks[currentIndex];
           }
+          currentIndex++;
         }
       });
+
       return translatedHTML;
     }
   }
