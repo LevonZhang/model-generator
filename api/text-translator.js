@@ -68,6 +68,7 @@ module.exports = async (req, res) => {
         return { error: `Blocked for ${result.response.promptFeedback.blockReason}` };
       }
       let text = result.response.text();
+      console.log(text)
       res.status(200).json(JSON.parse(text));
   } catch (error) {
     console.error("Error translating text:", error);
