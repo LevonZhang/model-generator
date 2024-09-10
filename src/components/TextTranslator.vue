@@ -309,15 +309,19 @@ export default {
     buildTranslatedHTML(translatedChunks, htmlTags) {
       let translatedHTML = '';
       let currentIndex = 0;
-      translatedChunks.sort((a, b) => a.index - b.index).forEach((translatedChunk) => {
-        if (htmlTags[currentIndex]) {
-          translatedHTML += htmlTags[currentIndex].text;
-          currentIndex++;
-        }
+      currentIndex++; // 更新当前索引
+
+      // 遍历所有 HTML 标签
+      htmlTags.forEach(tagItem => {
+        translatedHTML += tagItem.text;
+        // currentIndex++; // 更新当前索引
+
+        // 在 translatedChunks 中查找与当前索引匹配的翻译对象
+        const translatedChunk = translatedChunks.find(chunk => chunk.index === tagItem.index);
+
+        // 如果找到匹配的翻译内容，则将其插入到 translatedHTML 中
         if (translatedChunk) {
-          // 直接使用翻译后的文本内容
-          translatedHTML += translatedChunk.translatedText; // 这里使用 translatedChunk.translatedText
-          currentIndex++;
+          translatedHTML += translatedChunk.translatedText;
         }
       });
 
