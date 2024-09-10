@@ -56,7 +56,7 @@ export default {
 
       const { textWithIndex, htmlTags } = this.extractTextAndIndex(this.inputText);
       const translatedChunks = [];
-      const apiChunkSize = 800; // API 的字数限制
+      const apiChunkSize = 600; // API 的字数限制
 
       // 将文本块分成多个符合 API 字数限制的请求
       let currentApiChunk = [];
