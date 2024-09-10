@@ -32,19 +32,21 @@ module.exports = async (req, res) => {
         const schema = {
           description: "Objects containing translated text",
           type: FunctionDeclarationSchemaType.ARRAY,
-          properties: {
-            index: {
-              type: FunctionDeclarationSchemaType.STRING,
-              description: "index",
-              nullable: false,
+          items: {
+            properties: {
+              index: {
+                type: FunctionDeclarationSchemaType.STRING,
+                description: "index",
+                nullable: false,
+              },
+              translatedText: {
+                type: FunctionDeclarationSchemaType.STRING,
+                description: "Translated text",
+                nullable: false,
+              },
             },
-            translatedText: {
-              type: FunctionDeclarationSchemaType.STRING,
-              description: "Translated text",
-              nullable: false,
-            },
-          },
-          required: ["translatedText"],
+            required: ["translatedText"],
+          }  
       };  
 
       const generationConfig = {
