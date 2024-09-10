@@ -314,13 +314,13 @@ export default {
         }
         if (tagItem.isTranslated) {
           // 查找对应的翻译内容
-          const translatedChunks = translatedChunks.filter(
+          const matchingChunks = translatedChunks.filter(
             chunk => chunk.index === currentIndex
           );
 
-          if (translatedChunks.length > 0) {
+          if (matchingChunks.length > 0) {
             // 如果找到匹配的翻译内容，则将其插入到 translatedHTML 中
-            translatedHTML += translatedChunks.map(chunk => chunk.translatedText).join('');
+            translatedHTML += matchingChunks.map(chunk => chunk.translatedText).join('');
           }
         } else if(tagItem.text){
           translatedHTML += tagItem.text;
