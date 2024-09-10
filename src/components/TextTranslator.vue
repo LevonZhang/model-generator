@@ -224,51 +224,47 @@ export default {
       const htmlTags = []; // 存储 HTML 标签和索引
       let currentIndex = 0;
 
-      function traverse(node) {
+      function traverse(node, parentIndex = null) {
         if (node.nodeType === Node.TEXT_NODE) {
           const text = node.nodeValue.trim(); // 去除空格
+          let htmlTag = {
+            index: currentIndex,
+            tagName: node.tagName.toLowerCase(), // 添加原始标签
+            text: text, // 直接添加数字内容到 htmlTags
+            isTranslated: false // 设置为不翻译
+          };
+          htmlTags.push(htmlTag);
           // 检查文本是否完全由数字、逗号和句点组成
-          if (text && /^[0-9.,]+$/.test(text)) { 
-            // 将 HTML 标签存储到 htmlTags 数组中
-            htmlTags.push({
-              index: currentIndex,
-              text: text // 直接添加数字内容到 htmlTags
-            });
-            currentIndex++;
-          } else {
+          if (text && /^[0-9.,]+$/.test(text) === false) {
             // 对文本进行转义处理
-            const escapedText = text.replace(/\n/g, '\\n').trim(); // 将回车符转换为 \n
-            if (escapedText!==""){
-              textWithIndex.push({ index: currentIndex, text: escapedText });
-              currentIndex++;
-            }
+            const escapedText = text.replace(/\n/g, '\\n'); // 将回车符转换为 \n
+            textWithIndex.push({ index: currentIndex, text: escapedText });
+            htmlTag.isTranslated = true;
           }
+          currentIndex++;
+          return htmlTag; // 返回当前的 htmlTag 对象
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           // 将 HTML 标签存储到 htmlTags 数组中
-          htmlTags.push({
+          const htmlTag = {
             index: currentIndex,
-            text: `<${node.tagName.toLowerCase()}${getAttributes(node)}>`
-          });
+            tagName: node.tagName.toLowerCase(), // 添加原始标签
+            isTranslated: false, // 设置为不翻译
+            children: [] // 初始化子节点数组
+          };
+          htmlTags.push(htmlTag);
           currentIndex++;
 
-          htmlTags.push({
-            index: currentIndex,
-            text: `</${node.tagName.toLowerCase()}>` 
-          });
-          // currentIndex++;  // Don't increment currentIndex for closing tags
-        }
+          for (let child of node.childNodes) {
+            let childTag = traverse(child, currentIndex); // 将当前索引传递给子节点
+            htmlTag.children.push(childTag);
+          }
 
-        for (let child of node.childNodes) {
-          traverse(child);
-        }
-      }
+          // 添加结束标签到 text 属性中
+          htmlTag.text += `</${node.tagName.toLowerCase()}>`;
 
-      function getAttributes(node) {
-        const attrs = [];
-        for (let attr of node.attributes) {
-          attrs.push(`${attr.name}="${attr.value}"`);
+          currentIndex++;
+          return htmlTag; // 返回当前的 htmlTag 对象
         }
-        return attrs.length > 0 ? ' ' + attrs.join(' ') : '';
       }
 
       for (let child of doc.body.childNodes) {
@@ -303,23 +299,35 @@ export default {
 
     buildTranslatedHTML(translatedChunks, htmlTags) {
       let translatedHTML = '';
-      let currentIndex = 0;
-      currentIndex++; // 更新当前索引
 
-      // 遍历所有 HTML 标签
-      htmlTags.forEach(tagItem => {
-        translatedHTML += tagItem.text;
-        currentIndex++; // 更新当前索引
+      function traverseHTML(htmlTags, currentIndex, translatedChunks) {
+        htmlTags.forEach(tagItem => {
+          if (tagItem.index === currentIndex) {
+            // 处理当前节点
+            translatedHTML += "<"+tagItem.tagName+">"
+            if (tagItem.isTranslated) {
+              // 查找对应的翻译内容
+              const translatedChunk = translatedChunks.find(chunk => chunk.index === currentIndex);
+              if (translatedChunk) {
+                translatedHTML += translatedChunk.translatedText;
+              }
+            } else {
+              translatedHTML += tagItem.text;
+            }
+            translatedHTML += "</"+tagItem.tagName+">"
+            currentIndex++;
 
-        // 在 translatedChunks 中查找与当前索引匹配的翻译对象
-        const translatedChunk = translatedChunks.find(chunk => chunk.index === currentIndex);
+            // 递归处理子节点
+            if (tagItem.children) {
+              tagItem.children.forEach(childIndex => {
+                traverseHTML(htmlTags, childIndex, translatedChunks);
+              });
+            }
+          }
+        });
+      }
 
-        // 如果找到匹配的翻译内容，则将其插入到 translatedHTML 中
-        if (translatedChunk) {
-          translatedHTML += translatedChunk.translatedText;
-        }
-      });
-
+      traverseHTML(htmlTags, 0, translatedChunks); // 从根节点开始递归处理
       return translatedHTML;
     }
   }
