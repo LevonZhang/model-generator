@@ -171,11 +171,11 @@ export default {
             }
             // 将翻译结果追加到对应索引的字符串中
             translatedChunks[index] += item.translatedText;
-            console.log("合并"+index+"-"+subIndex+":"+translatedChunks[index])
+            console.log("合并"+index+"-"+subIndex+"的翻译结果:"+translatedChunks[index])
           } else {
             // 如果没有子索引，则直接存储翻译结果
             translatedChunks[index] = item.translatedText;
-            console.log(index+":"+translatedChunks[index])
+            console.log(index+"的翻译结果:"+translatedChunks[index])
           }
         });
 
