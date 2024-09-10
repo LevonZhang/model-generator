@@ -81,7 +81,6 @@ export default {
             if (currentApiChunkSize >= apiChunkSize) {
               this.translateApiChunk(currentApiChunk, translatedChunks, index).then(() => {
                 // 检查是否所有块都已翻译
-                console.log("translatedChunks.length:"+translatedChunks.length+",textWithIndex.length:"+textWithIndex.length)
                 if (translatedChunks.length === textWithIndex.length) {
                   const translatedHTML = this.buildTranslatedHTML(
                     translatedChunks,
@@ -106,7 +105,6 @@ export default {
           if (currentApiChunkSize >= apiChunkSize) {
             this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => {
               // 检查是否所有块都已翻译
-              console.log("translatedChunks.length:"+translatedChunks.length+",textWithIndex.length:"+textWithIndex.length)
               if (translatedChunks.length === textWithIndex.length) {
                 const translatedHTML = this.buildTranslatedHTML(
                   translatedChunks,
@@ -128,7 +126,6 @@ export default {
       if (currentApiChunk.length > 0) {
         this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => {
           // 检查是否所有块都已翻译
-          console.log("translatedChunks.length:"+translatedChunks.length+",textWithIndex.length:"+textWithIndex.length)
           if (translatedChunks.length === textWithIndex.length) {
             const translatedHTML = this.buildTranslatedHTML(
               translatedChunks,
@@ -225,11 +222,9 @@ export default {
       let currentIndex = 0;
 
       function traverse(node, parentIndex = null) {
-        let tagName=""
+        let tagName=null
         if(node.tagName){
           tagName = node.tagName.toLowerCase()
-        }else{
-          console.log(node+".tagName为空！")
         }
         if (node.nodeType === Node.TEXT_NODE) {
           const text = node.nodeValue.trim(); // 去除空格
@@ -310,7 +305,9 @@ export default {
         htmlTags.forEach(tagItem => {
           if (tagItem.index === currentIndex) {
             // 处理当前节点
-            translatedHTML += "<"+tagItem.tagName+">"
+            if(tagItem.tagName){
+                translatedHTML += "<"+tagItem.tagName+">"
+            }
             if (tagItem.isTranslated) {
               // 查找对应的翻译内容
               const translatedChunk = translatedChunks.find(chunk => chunk.index === currentIndex);
@@ -320,7 +317,9 @@ export default {
             } else {
               translatedHTML += tagItem.text;
             }
-            translatedHTML += "</"+tagItem.tagName+">"
+            if(tagItem.tagName){
+                translatedHTML += "</"+tagItem.tagName+">"
+            }
             currentIndex++;
 
             // 递归处理子节点
