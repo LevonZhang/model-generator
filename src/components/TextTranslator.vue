@@ -193,6 +193,7 @@ export default {
           if (subIndex) {
             // 如果有子索引，则合并翻译结果
             if (!translatedChunks[index]) {
+              console.log(item+"!! translatedChunks[index] = ''")
               translatedChunks[index] = ''; // 初始化为空字符串
             }
             // 将翻译结果追加到对应索引的字符串中
