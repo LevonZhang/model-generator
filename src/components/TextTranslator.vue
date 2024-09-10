@@ -143,23 +143,43 @@ export default {
       try {
         // 拼接块中的文本内容，并用索引编号区分
         const textToTranslate = JSON.stringify(chunk.map(item => ({ index: item.index, translatedText: item.text })));
-        const response = await fetch('/api/text-translator', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            textToTranslate,
-            targetLanguage: this.targetLanguage
-          })
-        });
+        let response;
+        let retryCount = 0;
+        const maxRetries = 5; // 最大重试次数
+        let translateError = false
+        while (retryCount < maxRetries) {
+          response = await fetch('/api/text-translator', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              textToTranslate,
+              targetLanguage: this.targetLanguage
+            })
+          });
 
-        if (!response.ok) {
-          throw new Error(`API request failed with status ${response.status}`);
+          if (response.ok) {
+            break; // 请求成功，退出循环
+          } else {
+            console.error(`API request failed with status ${response.status}, retrying...`);
+            retryCount++;
+            await new Promise(resolve => setTimeout(resolve, 1000)); // 等待 1 秒后重试
+          }
+        }
+
+        if (retryCount >= maxRetries) {
+          translateError = true
+          // 超过最大重试次数，直接使用原始文本
+          console.error("Maximum retries reached, using original text.");
+          chunk.forEach(item => {
+            // 如果没有子索引，则直接存储翻译结果
+            translatedChunks[index] = item.text;
+          });
+          return; // 退出函数
         }
 
         const data = await response.json();
-
         // 处理翻译结果
         data.forEach(item => {
           // 将翻译后的文本存储到 translatedChunks 中
@@ -171,11 +191,11 @@ export default {
             }
             // 将翻译结果追加到对应索引的字符串中
             translatedChunks[index] += item.translatedText;
-            console.log("合并"+index+"-"+subIndex+"的翻译结果:"+translatedChunks[index])
+            console.log("合并" + index + "-" + subIndex + "的翻译结果:" + translatedChunks[index])
           } else {
             // 如果没有子索引，则直接存储翻译结果
             translatedChunks[index] = item.translatedText;
-            console.log(index+"的翻译结果:"+translatedChunks[index])
+            console.log(index + "的翻译结果:" + translatedChunks[index])
           }
         });
 
