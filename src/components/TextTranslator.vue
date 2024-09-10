@@ -245,9 +245,15 @@ export default {
           return htmlTag; // 返回当前的 htmlTag 对象
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           // 将 HTML 标签存储到 htmlTags 数组中
+          tagName=""
+          if(node.tagName){
+            tagName = node.tagName.toLowerCase()
+          }else{
+            console.log(node+".tagName为空！")
+          }
           const htmlTag = {
             index: currentIndex,
-            tagName: node.tagName.toLowerCase(), // 添加原始标签
+            tagName: tagName, // 添加原始标签
             isTranslated: false, // 设置为不翻译
             children: [] // 初始化子节点数组
           };
