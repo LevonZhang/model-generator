@@ -237,7 +237,7 @@ export default {
           // 检查文本是否完全由数字、逗号和句点组成
           if (text && /^[0-9.,]+$/.test(text) === false) {
             // 对文本进行转义处理
-            const escapedText = text.replace(/\n/g, '\\n'); // 将回车符转换为 \n
+            // const escapedText = text.replace(/\n/g, '\\n'); // 将回车符转换为 \n
             textWithIndex.push({ index: currentIndex, text: escapedText });
             htmlTag.isTranslated = true;
           }
