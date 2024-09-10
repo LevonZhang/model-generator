@@ -33,6 +33,7 @@ module.exports = async (req, res) => {
           description: "Objects containing translated text",
           type: FunctionDeclarationSchemaType.ARRAY,
           items: {
+            type: FunctionDeclarationSchemaType.OBJECT,
             properties: {
               index: {
                 type: FunctionDeclarationSchemaType.STRING,
