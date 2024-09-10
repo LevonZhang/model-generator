@@ -56,7 +56,7 @@ export default {
 
       const { textWithIndex, htmlTags } = this.extractTextAndIndex(this.inputText);
       const translatedChunks = [];
-      const apiChunkSize = 600; // API 的字数限制
+      const apiChunkSize = 1000; // API 的字数限制
 
       // 将文本块分成多个符合 API 字数限制的请求
       let currentApiChunk = [];
@@ -238,7 +238,7 @@ export default {
           if (text && /^[0-9.,]+$/.test(text) === false) {
             // 对文本进行转义处理
             // const escapedText = text.replace(/\n/g, '\\n'); // 将回车符转换为 \n
-            textWithIndex.push({ index: currentIndex, text: escapedText });
+            textWithIndex.push({ index: currentIndex, text: text });
             htmlTag.isTranslated = true;
           }
           currentIndex++;
