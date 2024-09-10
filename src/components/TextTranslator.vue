@@ -315,7 +315,7 @@ export default {
         if (tagItem.isTranslated) {
           // 查找对应的翻译内容
           const matchingChunks = translatedChunks.filter(
-            chunk => chunk.index === currentIndex
+            chunk => chunk.index === tagItem.index
           );
 
           if (matchingChunks.length > 0) {
