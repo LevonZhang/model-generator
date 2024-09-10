@@ -307,38 +307,35 @@ export default {
     buildTranslatedHTML(translatedChunks, htmlTags) {
       let translatedHTML = '';
 
-      function traverseHTML(htmlTags, currentIndex, translatedChunks) {
-        htmlTags.forEach(tagItem => {
-          if (tagItem.index === currentIndex) {
-            // 处理当前节点
-            if(tagItem.tagName){
-                translatedHTML += tagItem.tagName
-            }
-            if (tagItem.isTranslated) {
-              // 查找对应的翻译内容
-              const translatedChunk = translatedChunks.find(chunk => chunk.index === currentIndex);
-              if (translatedChunk) {
-                translatedHTML += translatedChunk.translatedText;
-              }
-            } else {
-              translatedHTML += tagItem.text;
-            }
-            if(tagItem.tagName){
-                translatedHTML += tagItem.endTag
-            }
-            currentIndex++;
-
-            // 递归处理子节点
-            if (tagItem.children) {
-              tagItem.children.forEach(childIndex => {
-                traverseHTML(htmlTags, childIndex, translatedChunks);
-              });
-            }
+      function traverseHTML(tagItem, translatedChunks) {
+        // 处理当前节点
+        if(tagItem.tagName){
+            translatedHTML += tagItem.tagName
+        }
+        if (tagItem.isTranslated) {
+          // 查找对应的翻译内容
+          const translatedChunk = translatedChunks.find(chunk => chunk.index === tagItem.index);
+          if (translatedChunk) {
+            translatedHTML += translatedChunk.translatedText;
           }
-        });
-      }
+        } else if(tagItem.text){
+          translatedHTML += tagItem.text;
+        }
+        if(tagItem.tagName){
+            translatedHTML += tagItem.endTag
+        }
 
-      traverseHTML(htmlTags, 0, translatedChunks); // 从根节点开始递归处理
+        // 递归处理子节点
+        if (tagItem.children) {
+          tagItem.children.forEach(child => {
+            traverseHTML(htmlTags, child, translatedChunks);
+          });
+        }
+      }
+      htmlTags.forEach(tag=>{
+        traverseHTML(tag,translatedChunks); // 从根节点开始递归处理
+      })
+      
       return translatedHTML;
     }
   }
