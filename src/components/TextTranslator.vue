@@ -79,7 +79,7 @@ export default {
 
             // 如果当前 API 块的大小超过限制，则发送请求
             if (currentApiChunkSize >= apiChunkSize) {
-              this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => {
+              this.translateApiChunk(currentApiChunk, translatedChunks, index).then(() => {
                 // 检查是否所有块都已翻译
                 console.log("translatedChunks.length:"+translatedChunks.length+",textWithIndex.length:"+textWithIndex.length)
                 if (translatedChunks.length === textWithIndex.length) {
@@ -177,10 +177,10 @@ export default {
           // 超过最大重试次数，直接使用原始文本
           console.error("Maximum retries reached, using original text.");
           chunk.forEach(item => {
-            // 如果没有子索引，则直接存储翻译结果
-            console.log(index+"翻译错误，直接放原文："+item.text)
-            translatedChunks[index] = item.text;
-            console.log("translatedChunks:"+translatedChunks)
+            translatedChunks.push({
+              index: item.index,
+              translatedText: item.text
+            });
           });
           return; // 退出函数
         }
@@ -192,16 +192,25 @@ export default {
           const [index, subIndex] = item.index.split('-');
           if (subIndex) {
             // 如果有子索引，则合并翻译结果
-            if (!translatedChunks[index]) {
-              console.log(item+"!! translatedChunks[index] = ''")
-              translatedChunks[index] = ''; // 初始化为空字符串
+            const existingIndex = translatedChunks.findIndex(chunk => chunk.index === index);
+            if (existingIndex !== -1) {
+              // 如果已存在该索引，则将翻译结果追加到对应索引的字符串中
+              translatedChunks[existingIndex].translatedText += item.translatedText;
+              console.log("合并" + index + "-" + subIndex + "的翻译结果:" + translatedChunks[existingIndex].translatedText)
+            } else {
+              // 如果不存在该索引，则创建一个新的对象并添加到数组中
+              translatedChunks.push({
+                index: index,
+                translatedText: item.translatedText
+              });
+              console.log(index + "的翻译结果:" + translatedChunks[index].translatedText)
             }
-            // 将翻译结果追加到对应索引的字符串中
-            translatedChunks[index] += item.translatedText;
-            console.log("合并" + index + "-" + subIndex + "的翻译结果:" + translatedChunks[index])
           } else {
             // 如果没有子索引，则直接存储翻译结果
-            translatedChunks[index] = item.translatedText;
+            translatedChunks.push({
+              index: index,
+              translatedText: item.translatedText
+            });
             console.log(index + "的翻译结果:" + translatedChunks[index])
           }
           console.log("translatedChunks:"+translatedChunks)
@@ -307,7 +316,7 @@ export default {
         }
         if (translatedChunk) {
           // 直接使用翻译后的文本内容
-          translatedHTML += translatedChunk;
+          translatedHTML += translatedChunk.translatedText; // 这里使用 translatedChunk.translatedText
           currentIndex++;
         }
       });
