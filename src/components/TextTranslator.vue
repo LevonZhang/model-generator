@@ -314,10 +314,10 @@ export default {
       // 遍历所有 HTML 标签
       htmlTags.forEach(tagItem => {
         translatedHTML += tagItem.text;
-        // currentIndex++; // 更新当前索引
+        currentIndex++; // 更新当前索引
 
         // 在 translatedChunks 中查找与当前索引匹配的翻译对象
-        const translatedChunk = translatedChunks.find(chunk => chunk.index === tagItem.index);
+        const translatedChunk = translatedChunks.find(chunk => chunk.index === currentIndex);
 
         // 如果找到匹配的翻译内容，则将其插入到 translatedHTML 中
         if (translatedChunk) {
