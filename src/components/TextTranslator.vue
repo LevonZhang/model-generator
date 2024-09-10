@@ -234,7 +234,6 @@ export default {
             text: text, // 直接添加数字内容到 htmlTags
             isTranslated: false // 设置为不翻译
           };
-          htmlTags.push(htmlTag);
           // 检查文本是否完全由数字、逗号和句点组成
           if (text && /^[0-9.,]+$/.test(text) === false) {
             // 对文本进行转义处理
@@ -246,30 +245,37 @@ export default {
           return htmlTag; // 返回当前的 htmlTag 对象
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           // 将 HTML 标签存储到 htmlTags 数组中
+          tagName = `<${node.tagName.toLowerCase()}${getAttributes(node)}>`;
+          let endTag= `</${node.tagName.toLowerCase()}>`
           const htmlTag = {
             index: currentIndex,
             tagName: tagName, // 添加原始标签
+            endTag: endTag,
             isTranslated: false, // 设置为不翻译
             children: [] // 初始化子节点数组
           };
-          htmlTags.push(htmlTag);
           currentIndex++;
 
           for (let child of node.childNodes) {
             let childTag = traverse(child, currentIndex); // 将当前索引传递给子节点
             htmlTag.children.push(childTag);
           }
-
-          // 添加结束标签到 text 属性中
-          htmlTag.text += `</${node.tagName.toLowerCase()}>`;
-
           currentIndex++;
           return htmlTag; // 返回当前的 htmlTag 对象
         }
       }
 
+      function getAttributes(node) {
+        const attrs = [];
+        for (let attr of node.attributes) {
+          attrs.push(`${attr.name}="${attr.value}"`);
+        }
+        return attrs.length > 0 ? ' ' + attrs.join(' ') : '';
+      }
+
       for (let child of doc.body.childNodes) {
-        traverse(child);
+        let nodeTag = traverse(child);
+        htmlTags.push(nodeTag);
       }
 
       return { textWithIndex, htmlTags }; // 返回两个数组
@@ -306,7 +312,7 @@ export default {
           if (tagItem.index === currentIndex) {
             // 处理当前节点
             if(tagItem.tagName){
-                translatedHTML += "<"+tagItem.tagName+">"
+                translatedHTML += tagItem.tagName
             }
             if (tagItem.isTranslated) {
               // 查找对应的翻译内容
@@ -318,7 +324,7 @@ export default {
               translatedHTML += tagItem.text;
             }
             if(tagItem.tagName){
-                translatedHTML += "</"+tagItem.tagName+">"
+                translatedHTML += tagItem.endTag
             }
             currentIndex++;
 
