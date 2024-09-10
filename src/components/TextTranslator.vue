@@ -144,6 +144,7 @@ export default {
     // 翻译单个 API 块
     async translateApiChunk(chunk, translatedChunks) {
       try {
+        console.log("translateApiChunk translatedChunks:"+translatedChunks)
         // 拼接块中的文本内容，并用索引编号区分
         const textToTranslate = JSON.stringify(chunk.map(item => ({ index: item.index, translatedText: item.text })));
         let response;
