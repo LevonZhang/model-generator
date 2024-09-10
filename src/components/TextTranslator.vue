@@ -144,7 +144,6 @@ export default {
     // 翻译单个 API 块
     async translateApiChunk(chunk, translatedChunks) {
       try {
-        console.log("translateApiChunk translatedChunks:"+translatedChunks)
         // 拼接块中的文本内容，并用索引编号区分
         const textToTranslate = JSON.stringify(chunk.map(item => ({ index: item.index, translatedText: item.text })));
         let response;
@@ -196,14 +195,12 @@ export default {
             if (existingIndex !== -1) {
               // 如果已存在该索引，则将翻译结果追加到对应索引的字符串中
               translatedChunks[existingIndex].translatedText += item.translatedText;
-              console.log("合并" + index + "-" + subIndex + "的翻译结果:" + translatedChunks[existingIndex].translatedText)
             } else {
               // 如果不存在该索引，则创建一个新的对象并添加到数组中
               translatedChunks.push({
                 index: index,
                 translatedText: item.translatedText
               });
-              console.log(index + "的翻译结果:" + translatedChunks[index].translatedText)
             }
           } else {
             // 如果没有子索引，则直接存储翻译结果
@@ -211,9 +208,7 @@ export default {
               index: index,
               translatedText: item.translatedText
             });
-            console.log(index + "的翻译结果:" + translatedChunks[index])
           }
-          console.log("translatedChunks:"+translatedChunks)
         });
       } catch (error) {
         console.error('Translation error:', error);
