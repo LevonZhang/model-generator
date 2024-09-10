@@ -328,7 +328,7 @@ export default {
         // 递归处理子节点
         if (tagItem.children) {
           tagItem.children.forEach(child => {
-            traverseHTML(htmlTags, child, translatedChunks);
+            traverseHTML(child, translatedChunks);
           });
         }
       }
