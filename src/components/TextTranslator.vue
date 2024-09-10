@@ -201,6 +201,7 @@ export default {
             console.log(index + "的翻译结果:" + translatedChunks[index])
           }
         });
+        console.log("translatedChunks:"+translatedChunks)
 
       } catch (error) {
         console.error('Translation error:', error);
