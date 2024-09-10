@@ -3,7 +3,7 @@
     <div class="translator">
       <div class="input-area">
         <label for="input-text">Text to Translate:</label>
-        <div v-html="inputText" contenteditable="true" @input="onInputTextChange"></div> 
+        <div ref="inputText" v-html="inputText" contenteditable="true" @input="onInputTextChange"></div> 
       </div>
       <div class="output-area">
         <!-- <div class="language-selector"> -->
@@ -17,7 +17,7 @@
             <option value="zh-TW">Chinese (Traditional)</option>
           </select>
         <!-- </div> -->
-        <div v-html="outputText" contenteditable="false"></div>
+        <div ref="outputText" v-html="outputText" contenteditable="false"></div>
       </div>
     </div>
     <button @click="translateText">Translate</button>
@@ -42,6 +42,10 @@ export default {
       isDesigning: false,
       errorMessage: null,
     };
+  },
+  mounted() {
+    this.$refs.inputText.addEventListener('scroll', this.syncScroll);
+    this.$refs.outputText.addEventListener('scroll', this.syncScroll);
   },
   methods: {
     onInputTextChange(event) {
@@ -341,6 +345,16 @@ export default {
       })
       
       return translatedHTML;
+    },
+
+    syncScroll(event) {
+      // 获取当前滚动的元素
+      const targetElement = event.target;
+      // 获取另一个元素
+      const otherElement = targetElement === this.$refs.inputText ? this.$refs.outputText : this.$refs.inputText;
+
+      // 同步滚动位置
+      otherElement.scrollTop = targetElement.scrollTop;
     }
   }
 };
