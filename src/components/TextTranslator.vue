@@ -79,17 +79,7 @@ export default {
 
             // 如果当前 API 块的大小超过限制，则发送请求
             if (currentApiChunkSize >= apiChunkSize) {
-              this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => {
-                // 检查是否所有块都已翻译
-                if (translatedChunks.length === textWithIndex.length) {
-                  const translatedHTML = this.buildTranslatedHTML(
-                    translatedChunks,
-                    htmlTags
-                  );
-                  this.outputText = translatedHTML;
-                  this.isDesigning = false;
-                }
-              });
+              this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => this.handleTranslationComplete(translatedChunks, htmlTags));
               // 重置当前 API 块
               currentApiChunk = [];
               currentApiChunkSize = 0;
@@ -103,17 +93,7 @@ export default {
 
           // 如果当前 API 块的大小超过限制，则发送请求
           if (currentApiChunkSize >= apiChunkSize) {
-            this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => {
-              // 检查是否所有块都已翻译
-              if (translatedChunks.length === textWithIndex.length) {
-                const translatedHTML = this.buildTranslatedHTML(
-                  translatedChunks,
-                  htmlTags
-                );
-                this.outputText = translatedHTML;
-                this.isDesigning = false;
-              }
-            });
+            this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => this.handleTranslationComplete(translatedChunks, htmlTags));
             // 重置当前 API 块
             currentApiChunk = [];
             currentApiChunkSize = 0;
@@ -124,17 +104,7 @@ export default {
 
       // 如果最后一块没有超过限制，则发送请求
       if (currentApiChunk.length > 0) {
-        this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => {
-          // 检查是否所有块都已翻译
-          if (translatedChunks.length === textWithIndex.length) {
-            const translatedHTML = this.buildTranslatedHTML(
-              translatedChunks,
-              htmlTags
-            );
-            this.outputText = translatedHTML;
-            this.isDesigning = false;
-          }
-        });
+        this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => this.handleTranslationComplete(translatedChunks, htmlTags));
       }
     },
 
@@ -143,7 +113,6 @@ export default {
       try {
         // 拼接块中的文本内容，并用索引编号区分
         const textToTranslate = JSON.stringify(chunk.map(item => ({ index: item.index, translatedText: item.text })));
-        console.log(textToTranslate)
         const response = await fetch('/api/text-translator', {
           method: 'POST',
           headers: {
@@ -172,15 +141,30 @@ export default {
             }
             // 将翻译结果追加到对应索引的字符串中
             translatedChunks[index] += item.translatedText;
+            console.log("合并"+index+"-"+subIndex+":"+translatedChunks[index])
           } else {
             // 如果没有子索引，则直接存储翻译结果
             translatedChunks[index] = item.translatedText;
+            console.log(index+":"+translatedChunks[index])
           }
         });
 
       } catch (error) {
         console.error('Translation error:', error);
         this.errorMessage = "Error during translate. Please check your input or network connection.";
+      }
+    },
+
+     // 处理翻译完成后的操作
+    handleTranslationComplete(translatedChunks, htmlTags) {
+      translatedCount++; // 翻译一个块后，计数器加 1
+      if (translatedCount === textWithIndex.length) { // 检查是否所有块都已翻译完成
+        const translatedHTML = this.buildTranslatedHTML(
+          translatedChunks,
+          htmlTags
+        );
+        this.outputText = translatedHTML;
+        this.isDesigning = false;
       }
     },
 
