@@ -225,11 +225,17 @@ export default {
       let currentIndex = 0;
 
       function traverse(node, parentIndex = null) {
+        let tagName=""
+        if(node.tagName){
+          tagName = node.tagName.toLowerCase()
+        }else{
+          console.log(node+".tagName为空！")
+        }
         if (node.nodeType === Node.TEXT_NODE) {
           const text = node.nodeValue.trim(); // 去除空格
           let htmlTag = {
             index: currentIndex,
-            tagName: node.tagName.toLowerCase(), // 添加原始标签
+            tagName: tagName, // 添加原始标签
             text: text, // 直接添加数字内容到 htmlTags
             isTranslated: false // 设置为不翻译
           };
@@ -245,12 +251,6 @@ export default {
           return htmlTag; // 返回当前的 htmlTag 对象
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           // 将 HTML 标签存储到 htmlTags 数组中
-          let tagName=""
-          if(node.tagName){
-            tagName = node.tagName.toLowerCase()
-          }else{
-            console.log(node+".tagName为空！")
-          }
           const htmlTag = {
             index: currentIndex,
             tagName: tagName, // 添加原始标签
