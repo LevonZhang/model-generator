@@ -177,7 +177,9 @@ export default {
           console.error("Maximum retries reached, using original text.");
           chunk.forEach(item => {
             // 如果没有子索引，则直接存储翻译结果
+            console.log(index+"翻译错误，直接放原文："+item.text)
             translatedChunks[index] = item.text;
+            console.log("translatedChunks:"+translatedChunks)
           });
           return; // 退出函数
         }
