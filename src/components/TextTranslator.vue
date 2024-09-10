@@ -81,6 +81,7 @@ export default {
             if (currentApiChunkSize >= apiChunkSize) {
               this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => {
                 // 检查是否所有块都已翻译
+                console.log("translatedChunks.length:"+translatedChunks.length+",textWithIndex.length:"+textWithIndex.length)
                 if (translatedChunks.length === textWithIndex.length) {
                   const translatedHTML = this.buildTranslatedHTML(
                     translatedChunks,
@@ -105,6 +106,7 @@ export default {
           if (currentApiChunkSize >= apiChunkSize) {
             this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => {
               // 检查是否所有块都已翻译
+              console.log("translatedChunks.length:"+translatedChunks.length+",textWithIndex.length:"+textWithIndex.length)
               if (translatedChunks.length === textWithIndex.length) {
                 const translatedHTML = this.buildTranslatedHTML(
                   translatedChunks,
@@ -126,6 +128,7 @@ export default {
       if (currentApiChunk.length > 0) {
         this.translateApiChunk(currentApiChunk, translatedChunks, currentChunkIndex).then(() => {
           // 检查是否所有块都已翻译
+          console.log("translatedChunks.length:"+translatedChunks.length+",textWithIndex.length:"+textWithIndex.length)
           if (translatedChunks.length === textWithIndex.length) {
             const translatedHTML = this.buildTranslatedHTML(
               translatedChunks,
