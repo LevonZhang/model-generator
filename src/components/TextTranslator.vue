@@ -245,7 +245,7 @@ export default {
           return htmlTag; // 返回当前的 htmlTag 对象
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           // 将 HTML 标签存储到 htmlTags 数组中
-          tagName=""
+          let tagName=""
           if(node.tagName){
             tagName = node.tagName.toLowerCase()
           }else{
